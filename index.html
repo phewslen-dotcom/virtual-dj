@@ -1157,6 +1157,11 @@
     border-color: var(--accent-magenta);
     box-shadow: 0 0 10px rgba(255,0,170,0.3);
   }
+  .library-btn.active {
+    background: linear-gradient(135deg, #8b00cc, #cc00ff);
+    border-color: var(--accent-magenta);
+    box-shadow: 0 0 12px rgba(255,0,170,0.5);
+  }
   .library-list {
     max-height: 200px;
     overflow-y: auto;
@@ -1830,6 +1835,8 @@
       <div class="library-title">📚 TRACK LIBRARY</div>
       <div class="library-controls">
         <button class="library-btn" onclick="loadLibraryFiles()">+ LOAD FILES</button>
+        <button class="library-btn" id="sortByBpmBtn" onclick="setSortMode('bpm')" title="Sort by BPM">BPM ⬍</button>
+        <button class="library-btn" id="sortByKeyBtn" onclick="setSortMode('key')" title="Sort by Key">KEY ⬍</button>
         <button class="library-btn" onclick="clearLibrary()">CLEAR</button>
       </div>
     </div>
