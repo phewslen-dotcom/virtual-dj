@@ -1474,7 +1474,6 @@
 
   /* --- Fader thumb: metal cap with grip ridges --- */
   .fader-thumb {
-    position: relative;
     width: 26px;
     height: 14px;
     border-radius: 3px;
@@ -1485,7 +1484,7 @@
   .fader-thumb::before {
     content: '';
     position: absolute;
-    inset: 2px 3px;
+    top: 2px; right: 3px; bottom: 2px; left: 3px;
     background: repeating-linear-gradient(
       180deg,
       transparent 0px, transparent 1.5px,
@@ -1497,7 +1496,9 @@
   .fader-thumb::after {
     content: '';
     position: absolute;
-    inset: 0;
+    top: 0; right: 0; bottom: 0; left: 0;
+    width: 100%;
+    height: 100%;
     border-radius: 3px;
     background: linear-gradient(180deg,
       rgba(255,255,255,0.2) 0%,
@@ -1541,7 +1542,7 @@
   .crossfader-thumb::before {
     content: '';
     position: absolute;
-    inset: 4px 3px;
+    top: 4px; right: 3px; bottom: 4px; left: 3px;
     background: repeating-linear-gradient(
       180deg,
       transparent 0px, transparent 2px,
@@ -1552,7 +1553,7 @@
   .crossfader-thumb::after {
     content: '';
     position: absolute;
-    inset: 0;
+    top: 0; right: 0; bottom: 0; left: 0;
     border-radius: 4px;
     background: linear-gradient(180deg, rgba(255,255,255,0.22) 0%, transparent 50%);
     pointer-events: none;
@@ -1566,7 +1567,7 @@
   .vinyl-wrapper::before {
     content: '';
     position: absolute;
-    inset: -7px;
+    top: -7px; right: -7px; bottom: -7px; left: -7px;
     border-radius: 50%;
     background: conic-gradient(
       from 0deg,
@@ -1585,7 +1586,7 @@
   .vinyl-wrapper::after {
     content: '';
     position: absolute;
-    inset: -7px;
+    top: -7px; right: -7px; bottom: -7px; left: -7px;
     border-radius: 50%;
     border: 7px solid rgba(0,0,0,0.25);
     box-shadow: inset 0 2px 4px rgba(255,255,255,0.05);
@@ -3206,6 +3207,15 @@ document.getElementById('libraryFileInput').addEventListener('change', (e) => {
   e.target.value = ''; // Reset input
 });
 
+let librarySort = null; // null | 'bpm' | 'key'
+
+function setSortMode(mode) {
+  librarySort = (librarySort === mode) ? null : mode;
+  document.getElementById('sortByBpmBtn').classList.toggle('active', librarySort === 'bpm');
+  document.getElementById('sortByKeyBtn').classList.toggle('active', librarySort === 'key');
+  renderLibraryList();
+}
+
 function renderLibraryList() {
   const list = document.getElementById('libraryList');
 
@@ -3214,18 +3224,29 @@ function renderLibraryList() {
     return;
   }
 
-  list.innerHTML = library.tracks.map((track, idx) => `
-    <div class="library-item">
-      <span class="library-item-name" title="${track.name}">${track.name}</span>
-      <div class="library-item-meta">
-        ${track.bpm ? `<span style="font-size: 9px;">${track.bpm.toFixed(0)} BPM</span>` : ''}
-        ${track.key ? `<span style="font-size: 9px;">${track.key}</span>` : ''}
-        <button class="library-btn-small" onclick="loadTrackFromLibrary(${idx}, 'A')">A</button>
-        <button class="library-btn-small" onclick="loadTrackFromLibrary(${idx}, 'B')">B</button>
-        <button class="library-btn-small" onclick="removeFromLibrary(${idx})">✕</button>
+  // Build sorted index array preserving original indices for load/remove
+  let indices = library.tracks.map((_, i) => i);
+  if (librarySort === 'bpm') {
+    indices.sort((a, b) => (library.tracks[b].bpm || 0) - (library.tracks[a].bpm || 0));
+  } else if (librarySort === 'key') {
+    indices.sort((a, b) => (library.tracks[a].key || 'ZZZ').localeCompare(library.tracks[b].key || 'ZZZ'));
+  }
+
+  list.innerHTML = indices.map(idx => {
+    const track = library.tracks[idx];
+    return `
+      <div class="library-item">
+        <span class="library-item-name" title="${track.name}">${track.name}</span>
+        <div class="library-item-meta">
+          ${track.bpm ? `<span style="font-size: 9px;">${track.bpm.toFixed(0)} BPM</span>` : ''}
+          ${track.key ? `<span style="font-size: 9px;">${track.key}</span>` : ''}
+          <button class="library-btn-small" onclick="loadTrackFromLibrary(${idx}, 'A')">A</button>
+          <button class="library-btn-small" onclick="loadTrackFromLibrary(${idx}, 'B')">B</button>
+          <button class="library-btn-small" onclick="removeFromLibrary(${idx})">✕</button>
+        </div>
       </div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
 
 function loadTrackFromLibrary(idx, deckId) {
