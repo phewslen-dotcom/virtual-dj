@@ -64,6 +64,39 @@
     margin-top: 2px;
   }
 
+  .header-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .record-btn {
+    background: linear-gradient(135deg, #440000, #880000);
+    border: 1px solid rgba(255,102,0,0.4);
+    color: #ffaa88;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .record-btn:hover {
+    border-color: var(--accent-orange);
+    box-shadow: 0 0 10px rgba(255,102,0,0.4);
+  }
+  .record-btn.recording {
+    background: linear-gradient(135deg, #880000, #aa0000);
+    box-shadow: 0 0 15px rgba(255,0,0,0.6);
+    animation: pulse 1s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+
   /* ===== MAIN LAYOUT ===== */
   .main-layout {
     display: grid;
@@ -99,7 +132,8 @@
     border-radius: 12px 12px 0 0;
   }
   .deck-a::before { background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent); }
-  .deck-b::before { background: linear-gradient(90deg, transparent, var(--accent-magenta), transparent); }
+  .deck-a.master { border-color: rgba(0,245,255,0.6); box-shadow: 0 0 20px rgba(0,245,255,0.3); }
+  .deck-b.master { border-color: rgba(255,0,170,0.6); box-shadow: 0 0 20px rgba(255,0,170,0.3); }
 
   .deck-header {
     display: flex;
@@ -370,6 +404,59 @@
     box-shadow: var(--glow-magenta);
   }
 
+  .btn-master {
+    background: linear-gradient(135deg, #330044, #550066);
+    border: 1px solid rgba(170,136,255,0.3);
+    color: var(--text-dim);
+    width: 44px; height: 36px;
+    font-size: 7px;
+  }
+  .btn-master:hover {
+    color: #aa88ff;
+    border-color: #aa88ff;
+    box-shadow: 0 0 10px rgba(170,136,255,0.4);
+  }
+  .btn-master.active {
+    background: linear-gradient(135deg, #550066, #770088);
+    color: #aa88ff;
+    border-color: #aa88ff;
+    box-shadow: 0 0 15px rgba(170,136,255,0.6);
+    animation: masterPulse 2s infinite;
+  }
+
+  @keyframes masterPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+  }
+
+  /* ===== LOOP SIZE BUTTONS ===== */
+  .loop-size-row {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 6px;
+  }
+  .btn-loop-size {
+    background: linear-gradient(135deg, #002244, #003355);
+    border: 1px solid rgba(0,245,255,0.3);
+    color: var(--text-dim);
+    width: 32px; height: 24px;
+    font-size: 7px;
+    padding: 2px;
+  }
+  .btn-loop-size:hover, .btn-loop-size.active {
+    color: var(--accent-cyan);
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 6px rgba(0,245,255,0.3);
+    background: linear-gradient(135deg, #003355, #004466);
+  }
+  .deck-b .btn-loop-size.active {
+    color: var(--accent-magenta);
+    border-color: var(--accent-magenta);
+    box-shadow: 0 0 6px rgba(255,0,170,0.3);
+  }
+
   /* ===== PITCH SLIDER ===== */
   .pitch-section {
     display: flex;
@@ -394,6 +481,89 @@
   }
   .deck-a .pitch-display { color: var(--accent-cyan); }
   .deck-b .pitch-display { color: var(--accent-magenta); }
+
+  /* ===== HOT CUES ===== */
+  .hot-cues {
+    display: flex;
+    gap: 4px;
+    margin-top: 8px;
+  }
+  .hot-cue {
+    background: var(--bg-control);
+    border: 1px solid var(--border-color);
+    color: var(--text-dim);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 8px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.15s;
+    min-width: 24px;
+    position: relative;
+  }
+  .hot-cue:hover {
+    border-color: var(--accent-yellow);
+    color: var(--accent-yellow);
+  }
+  .hot-cue.set {
+    background: linear-gradient(135deg, #444400, #666600);
+    border-color: rgba(255,221,0,0.4);
+    color: var(--accent-yellow);
+    box-shadow: 0 0 8px rgba(255,221,0,0.3);
+  }
+  /* Color-coded hot cues */
+  .hot-cue.cue-1.set { background: linear-gradient(135deg, #ff4444, #cc2222); border-color: rgba(255,68,68,0.6); box-shadow: 0 0 8px rgba(255,68,68,0.4); }
+  .hot-cue.cue-2.set { background: linear-gradient(135deg, #44ff44, #22cc22); border-color: rgba(68,255,68,0.6); box-shadow: 0 0 8px rgba(68,255,68,0.4); }
+  .hot-cue.cue-3.set { background: linear-gradient(135deg, #4444ff, #2222cc); border-color: rgba(68,68,255,0.6); box-shadow: 0 0 8px rgba(68,68,255,0.4); }
+  .hot-cue.cue-4.set { background: linear-gradient(135deg, #ffff44, #cccc22); border-color: rgba(255,255,68,0.6); box-shadow: 0 0 8px rgba(255,255,68,0.4); }
+
+  .loop-sizes {
+    display: flex;
+    gap: 4px;
+    margin-top: 6px;
+  }
+  .loop-size {
+    background: var(--bg-control);
+    border: 1px solid var(--border-color);
+    color: var(--text-dim);
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 7px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .loop-size:hover {
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+  }
+  .loop-size.active {
+    background: linear-gradient(135deg, #002233, #003344);
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+    box-shadow: var(--glow-cyan);
+  }
+
+  .master-btn {
+    background: linear-gradient(135deg, #330044, #440055);
+    border: 1px solid rgba(255,0,170,0.3);
+    color: var(--text-dim);
+    width: 44px; height: 36px;
+    font-size: 7px;
+  }
+  .master-btn:hover {
+    color: var(--accent-magenta);
+    border-color: var(--accent-magenta);
+    box-shadow: var(--glow-magenta);
+  }
+  .master-btn.active {
+    color: var(--accent-magenta);
+    border-color: var(--accent-magenta);
+    box-shadow: var(--glow-magenta);
+    background: linear-gradient(135deg, #440055, #550066);
+  }
 
   .pitch-slider-wrap {
     flex: 1;
@@ -740,15 +910,15 @@
     box-shadow: 0 0 6px rgba(255,0,170,0.3);
   }
 
-  /* ===== BEAT PAD ===== */
-  .beatpad-section {
+  /* ===== STEP SEQUENCER ===== */
+  .step-sequencer {
     background: var(--bg-panel);
     border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 14px;
     position: relative;
   }
-  .beatpad-section::before {
+  .step-sequencer::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
@@ -757,26 +927,26 @@
     border-radius: 12px 12px 0 0;
   }
 
-  .beatpad-header {
+  .sequencer-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 12px;
   }
-  .beatpad-title {
+  .sequencer-title {
     font-size: 11px;
     letter-spacing: 4px;
     color: var(--accent-yellow);
     text-shadow: 0 0 8px rgba(255,221,0,0.5);
   }
-  .bpm-control {
+  .sequencer-controls {
     display: flex;
     align-items: center;
     gap: 8px;
     font-size: 9px;
     color: var(--text-dim);
   }
-  .bpm-input {
+  .sequencer-controls input {
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
     color: var(--accent-yellow);
@@ -787,56 +957,65 @@
     width: 60px;
     text-align: center;
   }
-
-  .pad-grid {
-    display: grid;
-    grid-template-columns: repeat(8, 1fr);
-    gap: 8px;
+  .seq-play-btn {
+    background: linear-gradient(135deg, #004400, #008800);
+    border: 1px solid rgba(0,255,136,0.4);
+    color: var(--accent-green);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .seq-play-btn:hover, .seq-play-btn.playing {
+    background: linear-gradient(135deg, #006644, #00aa88);
+    box-shadow: var(--glow-green);
+    border-color: var(--accent-green);
   }
 
-  .pad {
-    aspect-ratio: 1;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 8px;
-    letter-spacing: 1px;
-    font-weight: 700;
-    transition: all 0.08s;
+  .sequencer-grid {
     display: flex;
     flex-direction: column;
+    gap: 6px;
+  }
+  .seq-row {
+    display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 4px;
-    position: relative;
-    overflow: hidden;
-    user-select: none;
+    gap: 8px;
   }
-
-  .pad::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%);
-    pointer-events: none;
+  .sound-label {
+    font-size: 8px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    min-width: 50px;
+    text-align: right;
   }
-
-  .pad-icon { font-size: 14px; }
-  .pad-label { color: rgba(255,255,255,0.6); font-size: 7px; }
-
-  .pad:nth-child(1) { background: linear-gradient(135deg, #440000, #880000); border: 1px solid #aa2200; color: #ffaa88; }
-  .pad:nth-child(2) { background: linear-gradient(135deg, #004400, #008800); border: 1px solid #22aa00; color: #aaffaa; }
-  .pad:nth-child(3) { background: linear-gradient(135deg, #440044, #880088); border: 1px solid #aa00aa; color: #ffaaff; }
-  .pad:nth-child(4) { background: linear-gradient(135deg, #004444, #008888); border: 1px solid #00aaaa; color: #aaffff; }
-  .pad:nth-child(5) { background: linear-gradient(135deg, #444400, #888800); border: 1px solid #aaaa00; color: #ffffaa; }
-  .pad:nth-child(6) { background: linear-gradient(135deg, #220044, #440088); border: 1px solid #6600aa; color: #ddaaff; }
-  .pad:nth-child(7) { background: linear-gradient(135deg, #004422, #008844); border: 1px solid #00aa66; color: #aaffdd; }
-  .pad:nth-child(8) { background: linear-gradient(135deg, #442200, #884400); border: 1px solid #aa6600; color: #ffddaa; }
-
-  .pad:active, .pad.triggered {
-    filter: brightness(2.5);
-    transform: scale(0.95);
+  .steps {
+    display: flex;
+    gap: 2px;
+  }
+  .step-btn {
+    width: 20px;
+    height: 20px;
+    background: var(--bg-control);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.1s;
+  }
+  .step-btn:hover {
+    border-color: var(--accent-yellow);
+  }
+  .step-btn.active {
+    background: linear-gradient(135deg, #444400, #888800);
+    border-color: rgba(255,221,0,0.4);
+    box-shadow: 0 0 6px rgba(255,221,0,0.3);
+  }
+  .step-btn.current {
+    border-color: var(--accent-yellow);
+    box-shadow: 0 0 8px rgba(255,221,0,0.6);
   }
 
   /* ===== UTILITY ===== */
@@ -881,6 +1060,9 @@
 <div class="header">
   <h1>VIRTUAL DJ PRO</h1>
   <div class="header-sub">PROFESSIONAL DJ CONTROLLER</div>
+  <div class="header-controls">
+    <button id="recordBtn" class="record-btn" onclick="toggleRecording()">REC</button>
+  </div>
 </div>
 
 <div class="main-layout">
@@ -903,7 +1085,7 @@
 
     <div class="vinyl-container">
       <div class="vinyl-wrapper">
-        <div class="vinyl" id="vinylA">
+        <div class="vinyl" id="vinylA" onmousedown="startScratch('A', event)" onmousemove="doScratch('A', event)" onmouseup="endScratch('A')" onmouseleave="endScratch('A')">
           <div class="vinyl-grooves"></div>
           <div class="vinyl-shine"></div>
           <div class="vinyl-label">DECK A</div>
@@ -923,6 +1105,15 @@
       <button class="btn btn-play" id="playA" onclick="togglePlay('A')">▶</button>
       <button class="btn btn-loop" id="loopA" onclick="toggleLoop('A')">⟳ LOOP</button>
       <button class="btn btn-sync" onclick="syncBpm('A')">SYNC</button>
+      <button class="btn btn-master" id="masterA" onclick="setMasterDeck('A')">MASTER</button>
+    </div>
+
+    <!-- Auto Loop Size Buttons -->
+    <div class="loop-size-row">
+      <button class="btn btn-loop-size" onclick="setLoopSize('A', 0.5)">1/2</button>
+      <button class="btn btn-loop-size" onclick="setLoopSize('A', 0.25)">1/4</button>
+      <button class="btn btn-loop-size" onclick="setLoopSize('A', 0.125)">1/8</button>
+      <button class="btn btn-loop-size" onclick="setLoopSize('A', 0.0625)">1/16</button>
     </div>
 
     <div class="pitch-section">
@@ -930,6 +1121,20 @@
       <input type="range" class="pitch-slider" id="pitchA" min="-8" max="8" step="0.1" value="0"
              oninput="updatePitch('A', this.value)">
       <span class="pitch-display" id="pitchDisplayA">+0.0%</span>
+    </div>
+
+    <div class="hot-cues">
+      <button class="hot-cue" data-cue="1" onclick="handleHotCue('A', 1)">1</button>
+      <button class="hot-cue" data-cue="2" onclick="handleHotCue('A', 2)">2</button>
+      <button class="hot-cue" data-cue="3" onclick="handleHotCue('A', 3)">3</button>
+      <button class="hot-cue" data-cue="4" onclick="handleHotCue('A', 4)">4</button>
+    </div>
+
+    <div class="loop-sizes">
+      <button class="loop-size" onclick="setLoopSize('A', 0.5)">1/2</button>
+      <button class="loop-size" onclick="setLoopSize('A', 0.25)">1/4</button>
+      <button class="loop-size" onclick="setLoopSize('A', 0.125)">1/8</button>
+      <button class="loop-size" onclick="setLoopSize('A', 0.0625)">1/16</button>
     </div>
   </div>
 
@@ -1119,7 +1324,7 @@
 
     <div class="vinyl-container">
       <div class="vinyl-wrapper">
-        <div class="vinyl" id="vinylB">
+        <div class="vinyl" id="vinylB" onmousedown="startScratch('B', event)" onmousemove="doScratch('B', event)" onmouseup="endScratch('B')" onmouseleave="endScratch('B')">
           <div class="vinyl-grooves"></div>
           <div class="vinyl-shine"></div>
           <div class="vinyl-label">DECK B</div>
@@ -1139,6 +1344,15 @@
       <button class="btn btn-play" id="playB" onclick="togglePlay('B')">▶</button>
       <button class="btn btn-loop" id="loopB" onclick="toggleLoop('B')">⟳ LOOP</button>
       <button class="btn btn-sync" onclick="syncBpm('B')">SYNC</button>
+      <button class="btn btn-master" id="masterB" onclick="setMasterDeck('B')">MASTER</button>
+    </div>
+
+    <!-- Auto Loop Size Buttons -->
+    <div class="loop-size-row">
+      <button class="btn btn-loop-size" onclick="setLoopSize('B', 0.5)">1/2</button>
+      <button class="btn btn-loop-size" onclick="setLoopSize('B', 0.25)">1/4</button>
+      <button class="btn btn-loop-size" onclick="setLoopSize('B', 0.125)">1/8</button>
+      <button class="btn btn-loop-size" onclick="setLoopSize('B', 0.0625)">1/16</button>
     </div>
 
     <div class="pitch-section">
@@ -1147,50 +1361,34 @@
              oninput="updatePitch('B', this.value)">
       <span class="pitch-display" id="pitchDisplayB">+0.0%</span>
     </div>
+
+    <div class="hot-cues">
+      <button class="hot-cue" data-cue="1" onclick="handleHotCue('B', 1)">1</button>
+      <button class="hot-cue" data-cue="2" onclick="handleHotCue('B', 2)">2</button>
+      <button class="hot-cue" data-cue="3" onclick="handleHotCue('B', 3)">3</button>
+      <button class="hot-cue" data-cue="4" onclick="handleHotCue('B', 4)">4</button>
+    </div>
+
+    <div class="loop-sizes">
+      <button class="loop-size" onclick="setLoopSize('B', 0.5)">1/2</button>
+      <button class="loop-size" onclick="setLoopSize('B', 0.25)">1/4</button>
+      <button class="loop-size" onclick="setLoopSize('B', 0.125)">1/8</button>
+      <button class="loop-size" onclick="setLoopSize('B', 0.0625)">1/16</button>
+    </div>
   </div>
 
-  <!-- ====== BEAT PAD ====== -->
-  <div class="beatpad-section">
-    <div class="beatpad-header">
-      <div class="beatpad-title">⬛ BEAT SAMPLER</div>
-      <div class="bpm-control">
-        <span>MASTER BPM</span>
-        <input type="number" class="bpm-input" id="masterBpm" value="120" min="60" max="200">
+  <!-- ====== STEP SEQUENCER ====== -->
+  <div class="step-sequencer">
+    <div class="sequencer-header">
+      <div class="sequencer-title">⬛ STEP SEQUENCER</div>
+      <div class="sequencer-controls">
+        <label>Steps: <input type="number" id="seqSteps" value="16" min="4" max="32"></label>
+        <label>BPM: <input type="number" id="seqBpm" value="120" min="60" max="200"></label>
+        <button id="playSeq" class="seq-play-btn" onclick="toggleSequencer()">PLAY</button>
       </div>
     </div>
-    <div class="pad-grid">
-      <button class="pad" data-sound="kick" onmousedown="triggerPad(this, 'kick')">
-        <span class="pad-icon">🥁</span>
-        <span class="pad-label">KICK</span>
-      </button>
-      <button class="pad" data-sound="snare" onmousedown="triggerPad(this, 'snare')">
-        <span class="pad-icon">🎯</span>
-        <span class="pad-label">SNARE</span>
-      </button>
-      <button class="pad" data-sound="hihat" onmousedown="triggerPad(this, 'hihat')">
-        <span class="pad-icon">🎵</span>
-        <span class="pad-label">HI-HAT</span>
-      </button>
-      <button class="pad" data-sound="clap" onmousedown="triggerPad(this, 'clap')">
-        <span class="pad-icon">👏</span>
-        <span class="pad-label">CLAP</span>
-      </button>
-      <button class="pad" data-sound="openhat" onmousedown="triggerPad(this, 'openhat')">
-        <span class="pad-icon">🔔</span>
-        <span class="pad-label">OPEN HH</span>
-      </button>
-      <button class="pad" data-sound="tom" onmousedown="triggerPad(this, 'tom')">
-        <span class="pad-icon">🥁</span>
-        <span class="pad-label">TOM</span>
-      </button>
-      <button class="pad" data-sound="crash" onmousedown="triggerPad(this, 'crash')">
-        <span class="pad-icon">💥</span>
-        <span class="pad-label">CRASH</span>
-      </button>
-      <button class="pad" data-sound="rim" onmousedown="triggerPad(this, 'rim')">
-        <span class="pad-icon">🎼</span>
-        <span class="pad-label">RIM</span>
-      </button>
+    <div class="sequencer-grid" id="sequencerGrid">
+      <!-- Rows will be generated by JS -->
     </div>
   </div>
 
@@ -1217,28 +1415,41 @@ const decks = {
   A: {
     buffer: null, source: null, startTime: 0, pauseOffset: 0,
     playing: false, looping: false, cuePoint: 0,
+    loopStart: 0, loopEnd: 0,
     pitchRate: 1.0, bpm: null, volume: 0.8, gain: 1.0,
     analyserL: null, analyserR: null,
     gainNode: null, channelGainNode: null,
     hiFilter: null, midFilter: null, lowFilter: null,
     echoWet: null, reverbWet: null, flangerWet: null, filterNode: null,
     waveformData: null, animFrame: null,
+    hotCues: [null, null, null, null]
   },
   B: {
     buffer: null, source: null, startTime: 0, pauseOffset: 0,
     playing: false, looping: false, cuePoint: 0,
+    loopStart: 0, loopEnd: 0,
     pitchRate: 1.0, bpm: null, volume: 0.8, gain: 1.0,
     analyserL: null, analyserR: null,
     gainNode: null, channelGainNode: null,
     hiFilter: null, midFilter: null, lowFilter: null,
     echoWet: null, reverbWet: null, flangerWet: null, filterNode: null,
     waveformData: null, animFrame: null,
+    hotCues: [null, null, null, null]
   }
 };
+
+// ---- Master Deck ----
+let masterDeck = null;
 
 // ---- Master Nodes ----
 let masterGainA = null, masterGainB = null;
 let crossValue = 0.5; // 0=full A, 1=full B
+
+// ---- Recording ----
+let mediaRecorder = null;
+let recordedChunks = [];
+let isRecording = false;
+let recordDestination = null;
 
 // ---- FX State ----
 const fxState = {
@@ -1247,6 +1458,23 @@ const fxState = {
   flanger: { A: false, B: false, wet: 0 },
   filter:  { A: false, B: false, cutoff: 18000 }
 };
+
+// ---- Step Sequencer ----
+let seqPattern = {
+  kick: new Array(16).fill(false),
+  snare: new Array(16).fill(false),
+  hihat: new Array(16).fill(false),
+  clap: new Array(16).fill(false),
+  openhat: new Array(16).fill(false),
+  tom: new Array(16).fill(false),
+  crash: new Array(16).fill(false),
+  rim: new Array(16).fill(false)
+};
+let seqPlaying = false;
+let seqInterval = null;
+let currentStep = 0;
+let seqBpm = 120;
+let seqSteps = 16;
 
 // ----------------------------------------------------------------
 //  AUDIO GRAPH SETUP
@@ -1373,8 +1601,48 @@ function connectSourceToDeck(id, srcNode) {
 }
 
 // ----------------------------------------------------------------
-//  CROSSFADER
+//  RECORDING
 // ----------------------------------------------------------------
+function toggleRecording() {
+  if (isRecording) {
+    stopRecording();
+  } else {
+    startRecording();
+  }
+}
+
+function startRecording() {
+  if (!recordDestination) return;
+  recordedChunks = [];
+  mediaRecorder = new MediaRecorder(recordDestination.stream);
+  mediaRecorder.ondataavailable = e => {
+    if (e.data.size > 0) recordedChunks.push(e.data);
+  };
+  mediaRecorder.onstop = () => {
+    const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'virtual-dj-recording.webm';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+  mediaRecorder.start();
+  isRecording = true;
+  document.getElementById('recordBtn').classList.add('recording');
+  document.getElementById('recordBtn').textContent = 'STOP';
+  updateCrossfader(); // Reconnect to include recording
+}
+
+function stopRecording() {
+  if (mediaRecorder && isRecording) {
+    mediaRecorder.stop();
+    isRecording = false;
+    document.getElementById('recordBtn').classList.remove('recording');
+    document.getElementById('recordBtn').textContent = 'REC';
+    updateCrossfader(); // Reconnect without recording
+  }
+}
 function updateCrossfader() {
   const ctx = getAudioCtx();
   if (!masterGainA) {
@@ -1384,6 +1652,11 @@ function updateCrossfader() {
   if (!masterGainB) {
     masterGainB = ctx.createGain();
     masterGainB.connect(ctx.destination);
+  }
+
+  // Recording destination
+  if (!recordDestination) {
+    recordDestination = ctx.createMediaStreamDestination();
   }
 
   // Equal-power crossfade
@@ -1401,6 +1674,9 @@ function updateCrossfader() {
       try { d.gainNode.disconnect(); } catch(e) {}
       const master = id === 'A' ? masterGainA : masterGainB;
       d.gainNode.connect(master);
+      if (isRecording) {
+        d.gainNode.connect(recordDestination);
+      }
     }
   });
 }
@@ -1441,6 +1717,12 @@ function handleFile(e, id) {
       const bpm = estimateBpm(buffer);
       d.bpm = bpm;
       document.getElementById('bpmDisplay' + id).textContent = bpm ? `${bpm.toFixed(1)} BPM` : '-- BPM';
+
+      // Reset hot cues
+      d.hotCues = [null, null, null, null];
+      document.querySelectorAll(`.deck-${id.toLowerCase()} .hot-cue`).forEach(btn => {
+        btn.classList.remove('set', 'cue-1', 'cue-2', 'cue-3', 'cue-4');
+      });
 
       buildAudioGraph(id);
       drawStaticWaveform(id);
@@ -1581,6 +1863,12 @@ function playDeck(id, offset) {
   src.loop = d.looping;
   src.playbackRate.value = d.pitchRate;
 
+  // Set loop points if looping is enabled
+  if (d.looping && d.loopEnd > d.loopStart) {
+    src.loopStart = d.loopStart;
+    src.loopEnd = d.loopEnd;
+  }
+
   connectSourceToDeck(id, src);
 
   const when = ctx.currentTime;
@@ -1641,8 +1929,29 @@ function getCurrentTime(id) {
 }
 
 // ----------------------------------------------------------------
-//  CUE
+//  HOT CUES
 // ----------------------------------------------------------------
+function handleHotCue(deckId, cueIndex) {
+  const d = decks[deckId];
+  const cueBtn = document.querySelector(`.deck-${deckId.toLowerCase()} .hot-cue[data-cue="${cueIndex}"]`);
+  if (event.shiftKey) {
+    // Set cue
+    if (d.buffer) {
+      d.hotCues[cueIndex - 1] = getCurrentTime(deckId);
+      cueBtn.classList.add('set', `cue-${cueIndex}`);
+    }
+  } else {
+    // Jump to cue
+    const cueTime = d.hotCues[cueIndex - 1];
+    if (cueTime !== null && d.buffer) {
+      const wasPlaying = d.playing;
+      if (wasPlaying) pauseDeck(deckId);
+      d.pauseOffset = cueTime;
+      if (wasPlaying) playDeck(deckId, cueTime);
+      else updatePlayhead(deckId);
+    }
+  }
+}
 function cueAction(id) {
   const d = decks[id];
   if (!d.buffer) return;
@@ -1672,9 +1981,83 @@ function toggleLoop(id) {
   document.getElementById('loop' + id).classList.toggle('active', d.looping);
 }
 
+function setLoopSize(id, beatFraction) {
+  const d = decks[id];
+  if (!d.bpm || !d.buffer) return;
+
+  // Calculate loop duration in seconds based on beat fraction
+  const beatsPerMinute = d.bpm;
+  const beatsPerSecond = beatsPerMinute / 60;
+  const loopDuration = beatFraction / beatsPerSecond;
+
+  // Set loop start to current position, end to current + duration
+  const currentTime = getCurrentTime(id);
+  d.loopStart = currentTime;
+  d.loopEnd = currentTime + loopDuration;
+
+  // Enable looping and set the loop points
+  d.looping = true;
+  if (d.source) {
+    d.source.loop = true;
+    d.source.loopStart = d.loopStart;
+    d.source.loopEnd = d.loopEnd;
+  }
+
+  document.getElementById('loop' + id).classList.add('active');
+
+  // Clear any previous loop size button active states
+  document.querySelectorAll(`.deck-${id.toLowerCase()} .btn-loop-size`).forEach(btn => btn.classList.remove('active'));
+  // Set the clicked button as active (we'll need to modify this to track which one is active)
+}
+
 // ----------------------------------------------------------------
-//  PITCH
+//  SCRATCHING
 // ----------------------------------------------------------------
+let scratchState = { A: { active: false, startX: 0, lastX: 0 }, B: { active: false, startX: 0, lastX: 0 } };
+
+function startScratch(deckId, event) {
+  const state = scratchState[deckId];
+  state.active = true;
+  state.startX = event.clientX;
+  state.lastX = event.clientX;
+  event.preventDefault();
+}
+
+function doScratch(deckId, event) {
+  const state = scratchState[deckId];
+  const d = decks[deckId];
+
+  if (!state.active || !d.buffer) return;
+
+  const deltaX = event.clientX - state.lastX;
+  state.lastX = event.clientX;
+
+  // Calculate time adjustment based on horizontal movement
+  // More movement = bigger time jump
+  const sensitivity = 0.01; // Adjust this value to control scratch sensitivity
+  const timeAdjustment = -deltaX * sensitivity;
+
+  if (d.playing) {
+    // If playing, adjust the playback position
+    let newTime = getCurrentTime(deckId) + timeAdjustment;
+    newTime = Math.max(0, Math.min(d.buffer.duration, newTime));
+
+    // Stop current playback and restart from new position
+    pauseDeck(deckId);
+    d.pauseOffset = newTime;
+    playDeck(deckId, newTime);
+  } else {
+    // If paused, just adjust the pause offset
+    d.pauseOffset = Math.max(0, Math.min(d.buffer.duration, d.pauseOffset + timeAdjustment));
+    updatePlayhead(deckId);
+  }
+
+  event.preventDefault();
+}
+
+function endScratch(deckId) {
+  scratchState[deckId].active = false;
+}
 function updatePitch(id, val) {
   const d = decks[id];
   const pct = parseFloat(val);
@@ -1688,8 +2071,8 @@ function updatePitch(id, val) {
 }
 
 function syncBpm(id) {
-  const other = id === 'A' ? 'B' : 'A';
-  const dSrc = decks[other];
+  let masterId = masterDeck || (id === 'A' ? 'B' : 'A');
+  const dSrc = decks[masterId];
   const dDst = decks[id];
   if (!dSrc.bpm || !dDst.bpm) return;
   const targetRate = dSrc.bpm / dDst.bpm;
@@ -1697,6 +2080,23 @@ function syncBpm(id) {
   const pct = (targetRate - 1) * 100;
   document.getElementById('pitch' + id).value = Math.max(-8, Math.min(8, pct));
   updatePitch(id, Math.max(-8, Math.min(8, pct)));
+}
+
+function setMasterDeck(id) {
+  // Clear previous master
+  if (masterDeck) {
+    document.getElementById('master' + masterDeck).classList.remove('active');
+    document.getElementById('deck' + masterDeck).classList.remove('master');
+  }
+
+  // Set new master
+  if (masterDeck === id) {
+    masterDeck = null; // Toggle off
+  } else {
+    masterDeck = id;
+    document.getElementById('master' + id).classList.add('active');
+    document.getElementById('deck' + id).classList.add('master');
+  }
 }
 
 // ----------------------------------------------------------------
@@ -2112,8 +2512,66 @@ function applyFxWet(fx) {
 }
 
 // ----------------------------------------------------------------
-//  BEAT PADS
+//  STEP SEQUENCER
 // ----------------------------------------------------------------
+function toggleSequencer() {
+  if (seqPlaying) {
+    stopSequencer();
+  } else {
+    startSequencer();
+  }
+}
+
+function startSequencer() {
+  seqPlaying = true;
+  document.getElementById('playSeq').classList.add('playing');
+  document.getElementById('playSeq').textContent = 'STOP';
+  seqBpm = parseInt(document.getElementById('seqBpm').value);
+  seqSteps = parseInt(document.getElementById('seqSteps').value);
+  const interval = (60 / seqBpm) * 1000 / 4; // 16th notes
+  seqInterval = setInterval(() => {
+    playStep(currentStep);
+    updateStepDisplay(currentStep);
+    currentStep = (currentStep + 1) % seqSteps;
+  }, interval);
+}
+
+function stopSequencer() {
+  seqPlaying = false;
+  document.getElementById('playSeq').classList.remove('playing');
+  document.getElementById('playSeq').textContent = 'PLAY';
+  if (seqInterval) {
+    clearInterval(seqInterval);
+    seqInterval = null;
+  }
+  currentStep = 0;
+  updateStepDisplay(-1);
+}
+
+function playStep(step) {
+  Object.keys(seqPattern).forEach(sound => {
+    if (seqPattern[sound][step]) {
+      playDrumSound(sound);
+    }
+  });
+}
+
+function updateStepDisplay(step) {
+  document.querySelectorAll('.step-btn').forEach((btn, index) => {
+    btn.classList.remove('current');
+    if (index % seqSteps === step) {
+      btn.classList.add('current');
+    }
+  });
+}
+
+function toggleStep(sound, step) {
+  seqPattern[sound][step] = !seqPattern[sound][step];
+  const btn = document.querySelector(`.seq-row[data-sound="${sound}"] .step-btn[data-step="${step}"]`);
+  if (btn) {
+    btn.classList.toggle('active', seqPattern[sound][step]);
+  }
+}
 function triggerPad(el, sound) {
   getAudioCtx();
   el.classList.add('triggered');
@@ -2275,6 +2733,8 @@ document.addEventListener('keydown', e => {
     case 'KeyU': togglePlay('B'); break;
     case 'KeyI': cueAction('B'); break;
     case 'KeyO': toggleLoop('B'); break;
+    case 'KeyR': toggleRecording(); break;
+    case 'KeyP': toggleSequencer(); break;
     case 'Digit1': triggerPad(document.querySelector('[data-sound="kick"]'), 'kick'); break;
     case 'Digit2': triggerPad(document.querySelector('[data-sound="snare"]'), 'snare'); break;
     case 'Digit3': triggerPad(document.querySelector('[data-sound="hihat"]'), 'hihat'); break;
@@ -2341,11 +2801,39 @@ window.addEventListener('load', () => {
       ctx2.fillRect(x, h/2 - barH, 1.5, barH * 2);
     }
   });
+
+  // Init sequencer
+  initSequencerGrid();
 });
 
 // ----------------------------------------------------------------
-//  PREVENT CONTEXT MENU ON KNOBS/FADERS
+//  INIT SEQUENCER GRID
 // ----------------------------------------------------------------
+function initSequencerGrid() {
+  const grid = document.getElementById('sequencerGrid');
+  const sounds = [
+    { key: 'kick', label: 'KICK' },
+    { key: 'snare', label: 'SNARE' },
+    { key: 'hihat', label: 'HI-HAT' },
+    { key: 'clap', label: 'CLAP' },
+    { key: 'openhat', label: 'OPEN HH' },
+    { key: 'tom', label: 'TOM' },
+    { key: 'crash', label: 'CRASH' },
+    { key: 'rim', label: 'RIM' }
+  ];
+  sounds.forEach(sound => {
+    const row = document.createElement('div');
+    row.className = 'seq-row';
+    row.setAttribute('data-sound', sound.key);
+    row.innerHTML = `
+      <div class="sound-label">${sound.label}</div>
+      <div class="steps">
+        ${Array.from({ length: 16 }, (_, i) => `<button class="step-btn ${seqPattern[sound.key][i] ? 'active' : ''}" data-step="${i}" onclick="toggleStep('${sound.key}', ${i})"></button>`).join('')}
+      </div>
+    `;
+    grid.appendChild(row);
+  });
+}
 document.querySelectorAll('.knob-wrap, .fader-track, .crossfader-track').forEach(el => {
   el.addEventListener('contextmenu', e => e.preventDefault());
 });
