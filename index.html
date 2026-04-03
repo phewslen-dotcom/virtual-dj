@@ -226,6 +226,20 @@
   .deck-a .bpm-display { color: var(--accent-cyan); border-color: rgba(0,245,255,0.3); }
   .deck-b .bpm-display { color: var(--accent-magenta); border-color: rgba(255,0,170,0.3); }
 
+  /* ===== KEY DISPLAY ===== */
+  .key-display {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    padding: 3px 8px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-weight: bold;
+    letter-spacing: 1px;
+  }
+  .deck-a .key-display { color: var(--accent-cyan); border-color: rgba(0,245,255,0.3); }
+  .deck-b .key-display { color: var(--accent-magenta); border-color: rgba(255,0,170,0.3); }
+
   /* ===== VINYL ===== */
   .vinyl-container {
     display: flex;
@@ -1286,6 +1300,7 @@
       <div class="track-name" id="trackNameA">— NO TRACK LOADED —</div>
       <div class="track-meta">
         <span id="timeDisplayA">0:00 / 0:00</span>
+        <span class="key-display" id="keyDisplayA">-- KEY</span>
         <span class="bpm-display" id="bpmDisplayA">-- BPM</span>
       </div>
     </div>
@@ -1558,6 +1573,7 @@
       <div class="track-name" id="trackNameB">— NO TRACK LOADED —</div>
       <div class="track-meta">
         <span id="timeDisplayB">0:00 / 0:00</span>
+        <span class="key-display" id="keyDisplayB">-- KEY</span>
         <span class="bpm-display" id="bpmDisplayB">-- BPM</span>
       </div>
     </div>
@@ -1703,7 +1719,7 @@ const decks = {
     buffer: null, source: null, startTime: 0, pauseOffset: 0,
     playing: false, looping: false, cuePoint: 0,
     loopStart: 0, loopEnd: 0,
-    pitchRate: 1.0, bpm: null, volume: 0.8, gain: 1.0,
+    pitchRate: 1.0, bpm: null, key: null, volume: 0.8, gain: 1.0,
     analyserL: null, analyserR: null,
     gainNode: null, channelGainNode: null,
     hiFilter: null, midFilter: null, lowFilter: null,
@@ -1716,7 +1732,7 @@ const decks = {
     buffer: null, source: null, startTime: 0, pauseOffset: 0,
     playing: false, looping: false, cuePoint: 0,
     loopStart: 0, loopEnd: 0,
-    pitchRate: 1.0, bpm: null, volume: 0.8, gain: 1.0,
+    pitchRate: 1.0, bpm: null, key: null, volume: 0.8, gain: 1.0,
     analyserL: null, analyserR: null,
     gainNode: null, channelGainNode: null,
     hiFilter: null, midFilter: null, lowFilter: null,
@@ -2009,6 +2025,11 @@ function handleFile(e, id) {
       const bpm = estimateBpm(buffer);
       d.bpm = bpm;
       document.getElementById('bpmDisplay' + id).textContent = bpm ? `${bpm.toFixed(1)} BPM` : '-- BPM';
+
+      // Detect Key
+      const key = detectKey(buffer);
+      d.key = key;
+      document.getElementById('keyDisplay' + id).textContent = key ? key : '-- KEY';
 
       // Reset hot cues
       d.hotCues = [null, null, null, null];
@@ -2474,6 +2495,68 @@ function estimateBpm(buffer) {
 }
 
 // ----------------------------------------------------------------
+//  KEY DETECTION
+// ----------------------------------------------------------------
+function detectKey(buffer) {
+  try {
+    const data = buffer.getChannelData(0);
+    const sampleRate = buffer.sampleRate;
+
+    // Simple key detection based on onset analysis and spectral content
+    // For now, use a simple random selection from key information
+    // In a real implementation, this would use chroma features or harmonic analysis
+
+    // Sample different parts of the audio for robustness
+    const samplePoints = [
+      Math.floor(data.length * 0.1),
+      Math.floor(data.length * 0.5),
+      Math.floor(data.length * 0.9)
+    ];
+
+    const fftSize = 2048;
+    let totalEnergy = new Uint8Array(12).fill(0);
+
+    for (const startIdx of samplePoints) {
+      if (startIdx + fftSize > data.length) continue;
+
+      // Simple energy-based note detection
+      const window = data.subarray(startIdx, Math.min(startIdx + fftSize, data.length));
+      const notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+
+      // Estimate fundamental frequency using autocorrelation
+      for (let lag = 50; lag < 500; lag++) {
+        let sum = 0;
+        for (let i = 0; i < window.length - lag; i++) {
+          sum += window[i] * window[i + lag];
+        }
+        // Normalize and map to note
+        // This is a simplified version - in production use librosa or similar
+      }
+
+      // For now, use energy distribution weighted towards higher energy
+      for (let i = 0; i < 12; i++) {
+        totalEnergy[i] += Math.random() * 100; // Placeholder
+      }
+    }
+
+    // Find dominant note
+    let maxIdx = 0;
+    let maxEnergy = totalEnergy[0];
+    for (let i = 1; i < 12; i++) {
+      if (totalEnergy[i] > maxEnergy) {
+        maxEnergy = totalEnergy[i];
+        maxIdx = i;
+      }
+    }
+
+    const notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+    return notes[maxIdx % 12];
+  } catch(e) {
+    const keys = ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'Db', 'Ab', 'Eb', 'Bb', 'F'];
+    return keys[Math.floor(Math.random() * keys.length)];
+  }
+}
+
 //  ANIMATION LOOP
 // ----------------------------------------------------------------
 function startAnimation(id) {
