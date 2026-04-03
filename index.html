@@ -1115,6 +1115,102 @@
     text-shadow: 0 0 8px rgba(255,68,68,0.4);
   }
 
+  /* ===== LIBRARY ===== */
+  .library-section {
+    background: var(--bg-secondary);
+    border-top: 2px solid var(--accent-magenta);
+    border-radius: 6px;
+    padding: 12px 20px;
+    margin: 20px auto;
+    max-width: 1200px;
+    width: 90%;
+  }
+  .library-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .library-title {
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--accent-magenta);
+    text-shadow: 0 0 8px rgba(255,0,170,0.5);
+  }
+  .library-controls {
+    display: flex;
+    gap: 8px;
+  }
+  .library-btn {
+    background: linear-gradient(135deg, #4d0066, #8b00cc);
+    border: 1px solid rgba(255,0,170,0.4);
+    color: var(--accent-magenta);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .library-btn:hover {
+    border-color: var(--accent-magenta);
+    box-shadow: 0 0 10px rgba(255,0,170,0.3);
+  }
+  .library-list {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--bg-primary);
+  }
+  .library-item {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 10px;
+    color: var(--text-primary);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s;
+  }
+  .library-item:last-child {
+    border-bottom: none;
+  }
+  .library-item:hover {
+    background: var(--bg-control);
+  }
+  .library-item-name {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: 'Share Tech Mono', monospace;
+  }
+  .library-item-meta {
+    display: flex;
+    gap: 8px;
+    white-space: nowrap;
+  }
+  .library-btn-small {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-dim);
+    padding: 3px 6px;
+    border-radius: 3px;
+    font-size: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .library-btn-small:hover {
+    border-color: var(--accent-magenta);
+    color: var(--accent-magenta);
+  }
+  #libraryFileInput {
+    display: none;
+  }
+
   /* ===== STEP SEQUENCER ===== */
   .step-sequencer {
     background: var(--bg-panel);
@@ -1728,6 +1824,23 @@
     </div>
   </div>
 
+  <!-- ====== LIBRARY ====== -->
+  <div class="library-section">
+    <div class="library-header">
+      <div class="library-title">📚 TRACK LIBRARY</div>
+      <div class="library-controls">
+        <button class="library-btn" onclick="loadLibraryFiles()">+ LOAD FILES</button>
+        <button class="library-btn" onclick="clearLibrary()">CLEAR</button>
+      </div>
+    </div>
+    <input type="file" id="libraryFileInput" accept=".mp3,audio/mpeg" multiple>
+    <div class="library-list" id="libraryList">
+      <div class="library-item" style="color: var(--text-dim);">
+        <span>No tracks loaded. Click "LOAD FILES" to add MP3s to library.</span>
+      </div>
+    </div>
+  </div>
+
   <!-- ====== STEP SEQUENCER ====== -->
   <div class="step-sequencer">
     <div class="sequencer-header">
@@ -1838,6 +1951,11 @@ const fxState = {
   reverb:  { A: false, B: false, wet: 0 },
   flanger: { A: false, B: false, wet: 0 },
   filter:  { A: false, B: false, cutoff: 18000 }
+};
+
+// ---- Library ----
+const library = {
+  tracks: [] // Array of {name, file}
 };
 
 // ---- Step Sequencer ----
@@ -2627,6 +2745,129 @@ function detectKey(buffer) {
   } catch(e) {
     const keys = ['C', 'G', 'D', 'A', 'E', 'B', 'F#', 'Db', 'Ab', 'Eb', 'Bb', 'F'];
     return keys[Math.floor(Math.random() * keys.length)];
+  }
+}
+
+// ----------------------------------------------------------------
+//  LIBRARY MANAGEMENT
+// ----------------------------------------------------------------
+function loadLibraryFiles() {
+  const input = document.getElementById('libraryFileInput');
+  input.click();
+}
+
+document.getElementById('libraryFileInput').addEventListener('change', (e) => {
+  const files = Array.from(e.target.files);
+  files.forEach(file => {
+    // Only add if not already in library
+    if (!library.tracks.find(t => t.name === file.name)) {
+      library.tracks.push({
+        name: file.name.replace(/\.[^.]+$/, ''), // Remove extension
+        file: file,
+        duration: 0,
+        bpm: null,
+        key: null
+      });
+    }
+  });
+  renderLibraryList();
+  e.target.value = ''; // Reset input
+});
+
+function renderLibraryList() {
+  const list = document.getElementById('libraryList');
+
+  if (library.tracks.length === 0) {
+    list.innerHTML = '<div class="library-item" style="color: var(--text-dim);"><span>No tracks loaded. Click "LOAD FILES" to add MP3s to library.</span></div>';
+    return;
+  }
+
+  list.innerHTML = library.tracks.map((track, idx) => `
+    <div class="library-item">
+      <span class="library-item-name" title="${track.name}">${track.name}</span>
+      <div class="library-item-meta">
+        ${track.bpm ? `<span style="font-size: 9px;">${track.bpm.toFixed(0)} BPM</span>` : ''}
+        ${track.key ? `<span style="font-size: 9px;">${track.key}</span>` : ''}
+        <button class="library-btn-small" onclick="loadTrackFromLibrary(${idx}, 'A')">A</button>
+        <button class="library-btn-small" onclick="loadTrackFromLibrary(${idx}, 'B')">B</button>
+        <button class="library-btn-small" onclick="removeFromLibrary(${idx})">✕</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function loadTrackFromLibrary(idx, deckId) {
+  const track = library.tracks[idx];
+  if (!track) return;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const arrayBuffer = e.target.result;
+    const d = decks[deckId];
+
+    // Store original load track function call
+    const ctx = getAudioCtx();
+    ctx.decodeAudioData(arrayBuffer, (buffer) => {
+      d.buffer = buffer;
+      d.source = null;
+      d.playing = false;
+      d.pauseOffset = 0;
+      d.cuePoint = 0;
+      d.waveformData = extractWaveform(buffer);
+
+      document.getElementById('trackName' + deckId).textContent = track.name;
+      const dur = formatTime(buffer.duration);
+      document.getElementById('timeDisplay' + deckId).textContent = `0:00 / ${dur}`;
+
+      // Estimate BPM
+      const bpm = estimateBpm(buffer);
+      d.bpm = bpm;
+      document.getElementById('bpmDisplay' + deckId).textContent = bpm ? `${bpm.toFixed(1)} BPM` : '-- BPM';
+
+      // Update library track info
+      track.bpm = bpm;
+
+      // Detect Key
+      const key = detectKey(buffer);
+      d.key = key;
+      document.getElementById('keyDisplay' + deckId).textContent = key ? key : '-- KEY';
+      track.key = key;
+
+      // Update library display
+      renderLibraryList();
+
+      // Reset hot cues and cue points
+      d.hotCues = [null, null, null, null];
+      document.querySelectorAll(`#deck${deckId} .hot-cue`).forEach(btn => {
+        btn.classList.remove('set', 'cue-1', 'cue-2', 'cue-3', 'cue-4');
+      });
+      d.cuePoints = { intro: null, break: null, outro: null };
+      document.querySelectorAll(`#deck${deckId} .cue-point`).forEach(btn => {
+        btn.classList.remove('set');
+        const timeEl = btn.querySelector('.cue-point-time');
+        if (timeEl) timeEl.textContent = '--:--';
+      });
+
+      buildAudioGraph(deckId);
+      updatePlayhead(deckId);
+    }, (err) => {
+      console.error('Error decoding audio:', err);
+      alert('Error decoding audio file. Make sure it is a valid MP3 file.');
+    });
+  };
+  reader.readAsArrayBuffer(track.file);
+}
+
+function removeFromLibrary(idx) {
+  library.tracks.splice(idx, 1);
+  renderLibraryList();
+}
+
+function clearLibrary() {
+  if (library.tracks.length === 0) return;
+  if (confirm('Clear all tracks from library?')) {
+    library.tracks = [];
+    renderLibraryList();
   }
 }
 
