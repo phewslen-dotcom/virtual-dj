@@ -1435,6 +1435,431 @@
     .vinyl-wrapper { width: 150px; height: 150px; }
     .vinyl { width: 150px; height: 150px; }
   }
+
+  /* ================================================================
+     REALISM ENHANCEMENTS
+     ================================================================ */
+
+  /* --- Knob: 3D depth, drop shadow, press feedback --- */
+  .knob-wrap {
+    filter: drop-shadow(0 3px 5px rgba(0,0,0,0.88));
+    transition: transform 0.04s ease, filter 0.04s ease;
+  }
+  .knob-wrap:hover {
+    filter: drop-shadow(0 4px 7px rgba(0,0,0,0.88)) drop-shadow(0 0 3px rgba(255,255,255,0.04));
+  }
+  .knob-wrap.knob-pressed {
+    transform: scale(0.955);
+    filter: drop-shadow(0 1px 3px rgba(0,0,0,0.97));
+  }
+  .knob-track {
+    stroke: #111120;
+  }
+  /* Bright indicator dot */
+  .knob-dot {
+    fill: #fff;
+    filter: drop-shadow(0 0 2px rgba(255,255,255,0.9));
+  }
+
+  /* --- Fader track: machined inset groove --- */
+  .fader-track {
+    background: linear-gradient(90deg,
+      #060610 0%, #111120 20%, #1c1c2c 50%, #111120 80%, #060610 100%);
+    box-shadow:
+      inset 2px 0 5px rgba(0,0,0,0.85),
+      inset -2px 0 5px rgba(0,0,0,0.85),
+      inset 0 3px 8px rgba(0,0,0,0.97);
+    border: 1px solid #07070e;
+  }
+
+  /* --- Fader thumb: metal cap with grip ridges --- */
+  .fader-thumb {
+    position: relative;
+    width: 26px;
+    height: 14px;
+    border-radius: 3px;
+    box-shadow:
+      0 3px 7px rgba(0,0,0,0.85),
+      inset 0 1px 0 rgba(255,255,255,0.2);
+  }
+  .fader-thumb::before {
+    content: '';
+    position: absolute;
+    inset: 2px 3px;
+    background: repeating-linear-gradient(
+      180deg,
+      transparent 0px, transparent 1.5px,
+      rgba(0,0,0,0.28) 1.5px, rgba(0,0,0,0.28) 2.5px
+    );
+    border-radius: 1px;
+    pointer-events: none;
+  }
+  .fader-thumb::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 3px;
+    background: linear-gradient(180deg,
+      rgba(255,255,255,0.2) 0%,
+      rgba(255,255,255,0.05) 45%,
+      transparent 100%);
+    pointer-events: none;
+  }
+
+  /* Master fader thumb same treatment */
+  #masterFaderThumb {
+    background: linear-gradient(90deg, #444 0%, #888 30%, #aaa 50%, #888 70%, #444 100%);
+    border: 1px solid rgba(255,221,0,0.5);
+    box-shadow: 0 3px 7px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.18);
+  }
+
+  /* --- Crossfader: machined slot with metal cap --- */
+  .crossfader-track {
+    height: 10px;
+    background: linear-gradient(180deg,
+      #060610 0%, #111120 30%, #1a1a28 50%, #111120 70%, #060610 100%);
+    box-shadow:
+      inset 0 3px 6px rgba(0,0,0,0.97),
+      inset 0 -1px 2px rgba(0,0,0,0.6),
+      0 1px 0 rgba(255,255,255,0.025);
+    border: 1px solid #07070e;
+  }
+  .crossfader-thumb {
+    width: 22px;
+    height: 28px;
+    background: linear-gradient(180deg,
+      #c4c4cc 0%, #909098 12%, #585860 50%, #686870 88%, #a4a4ac 100%);
+    border-radius: 4px;
+    border: 1px solid #282832;
+    box-shadow:
+      0 4px 10px rgba(0,0,0,0.85),
+      inset 0 1px 0 rgba(255,255,255,0.38),
+      inset 0 -2px 0 rgba(0,0,0,0.55);
+    position: absolute;
+    top: 50%;
+  }
+  .crossfader-thumb::before {
+    content: '';
+    position: absolute;
+    inset: 4px 3px;
+    background: repeating-linear-gradient(
+      180deg,
+      transparent 0px, transparent 2px,
+      rgba(0,0,0,0.2) 2px, rgba(0,0,0,0.2) 3px
+    );
+    border-radius: 2px;
+  }
+  .crossfader-thumb::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 4px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.22) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  /* --- Vinyl: metallic platter ring + improved grooves --- */
+  .vinyl-wrapper {
+    width: 194px;
+    height: 194px;
+  }
+  .vinyl-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: -7px;
+    border-radius: 50%;
+    background: conic-gradient(
+      from 0deg,
+      #222230 0deg, #3e3e50 25deg, #2c2c3c 55deg,
+      #484858 90deg, #2c2c3c 125deg, #404052 155deg,
+      #222230 180deg, #3e3e50 205deg, #2c2c3c 235deg,
+      #484858 270deg, #2c2c3c 305deg, #404052 335deg,
+      #222230 360deg
+    );
+    box-shadow:
+      0 5px 18px rgba(0,0,0,0.95),
+      inset 0 2px 4px rgba(255,255,255,0.06),
+      0 0 0 2px rgba(0,0,0,0.7);
+    z-index: 0;
+  }
+  .vinyl-wrapper::after {
+    content: '';
+    position: absolute;
+    inset: -7px;
+    border-radius: 50%;
+    border: 7px solid rgba(0,0,0,0.25);
+    box-shadow: inset 0 2px 4px rgba(255,255,255,0.05);
+    z-index: 2;
+    pointer-events: none;
+  }
+  .vinyl {
+    background: radial-gradient(circle at 50% 50%,
+      #1e1e1e 0%, #121212 40%, #080808 72%, #030303 100%);
+    box-shadow:
+      inset 0 0 40px rgba(0,0,0,0.95),
+      inset 0 3px 10px rgba(255,255,255,0.02);
+    border: 2px solid #0a0a0a;
+    z-index: 1;
+    position: relative;
+  }
+  .vinyl-grooves {
+    background: repeating-radial-gradient(
+      circle at 50% 50%,
+      transparent 0px, transparent 1.5px,
+      rgba(255,255,255,0.022) 1.5px, rgba(255,255,255,0.022) 2px,
+      transparent 2px, transparent 4px,
+      rgba(255,255,255,0.013) 4px, rgba(255,255,255,0.013) 4.5px
+    );
+  }
+  .vinyl-spindle {
+    width: 10px; height: 10px;
+    background: radial-gradient(circle at 35% 30%, #b0b0b0 0%, #555 50%, #1a1a1a 100%);
+    border: 1px solid #444;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.95), inset 0 1px 0 rgba(255,255,255,0.32);
+    z-index: 3;
+  }
+  .deck-a .vinyl-label {
+    background: radial-gradient(circle at 42% 38%, #005566 0%, #002233 60%, #001122 100%);
+    border: 2px solid rgba(0,245,255,0.55);
+    box-shadow: 0 0 22px rgba(0,245,255,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+    text-shadow: 0 0 8px var(--accent-cyan);
+  }
+  .deck-b .vinyl-label {
+    background: radial-gradient(circle at 42% 38%, #440033 0%, #220011 60%, #110008 100%);
+    border: 2px solid rgba(255,0,170,0.55);
+    box-shadow: 0 0 22px rgba(255,0,170,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+    text-shadow: 0 0 8px var(--accent-magenta);
+  }
+
+  /* --- Tonearm: brushed metal shaft + pivot ball --- */
+  .tonearm {
+    width: 78px;
+    height: 7px;
+    background: linear-gradient(90deg,
+      #333 0%, #666 18%, #9a9a9a 45%, #aaa 50%, #9a9a9a 55%, #666 82%, #333 100%);
+    border-radius: 4px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.75), inset 0 1px 0 rgba(255,255,255,0.16);
+  }
+  .tonearm::before {
+    content: '';
+    position: absolute;
+    right: -11px; top: 50%;
+    transform: translateY(-50%);
+    width: 18px; height: 18px;
+    background: radial-gradient(circle at 38% 33%, #909090 0%, #555 50%, #1e1e1e 100%);
+    border-radius: 50%;
+    border: 1px solid #505050;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.22);
+  }
+  .tonearm::after {
+    content: '';
+    position: absolute;
+    left: 0; top: 50%;
+    transform: translateY(-50%) rotate(22deg);
+    width: 14px; height: 9px;
+    background: linear-gradient(135deg, #bbb, #777);
+    border-radius: 2px 1px 1px 2px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.65);
+  }
+
+  /* --- Transport buttons: physical press depth --- */
+  .btn {
+    box-shadow:
+      0 4px 8px rgba(0,0,0,0.7),
+      inset 0 1px 0 rgba(255,255,255,0.1),
+      inset 0 -3px 0 rgba(0,0,0,0.55);
+    transition: all 0.08s ease;
+  }
+  .btn:active {
+    transform: translateY(2px);
+    box-shadow:
+      0 1px 3px rgba(0,0,0,0.75),
+      inset 0 3px 6px rgba(0,0,0,0.55);
+  }
+  .btn-play {
+    box-shadow:
+      0 5px 10px rgba(0,0,0,0.75),
+      inset 0 1px 0 rgba(0,255,136,0.2),
+      inset 0 -4px 0 rgba(0,0,0,0.65);
+  }
+  .btn-play:active {
+    transform: translateY(3px);
+    box-shadow:
+      0 1px 3px rgba(0,0,0,0.85),
+      inset 0 4px 8px rgba(0,0,0,0.55);
+  }
+  .btn-cue {
+    box-shadow:
+      0 4px 8px rgba(0,0,0,0.7),
+      inset 0 1px 0 rgba(255,102,0,0.18),
+      inset 0 -3px 0 rgba(0,0,0,0.55);
+  }
+  .btn-cue:active {
+    transform: translateY(2px);
+    box-shadow:
+      0 1px 2px rgba(0,0,0,0.8),
+      inset 0 3px 6px rgba(0,0,0,0.55);
+  }
+
+  /* --- Sampler pads: thick rubber surface --- */
+  .sampler-pad {
+    background: linear-gradient(150deg,
+      #242432 0%, #1a1a26 45%, #111118 100%);
+    border: 2px solid #2c2c3a;
+    border-radius: 8px;
+    box-shadow:
+      0 5px 10px rgba(0,0,0,0.8),
+      inset 0 1px 0 rgba(255,255,255,0.07),
+      inset 0 -4px 0 rgba(0,0,0,0.65),
+      inset 2px 0 0 rgba(255,255,255,0.025);
+    transition: all 0.07s ease;
+  }
+  .sampler-pad:hover:not(.active) {
+    border-color: rgba(0,255,136,0.32);
+    box-shadow:
+      0 5px 12px rgba(0,0,0,0.8),
+      inset 0 1px 0 rgba(255,255,255,0.08),
+      inset 0 -4px 0 rgba(0,0,0,0.6),
+      0 0 10px rgba(0,255,136,0.13);
+  }
+  .sampler-pad.active {
+    background: var(--accent-green);
+    border-color: var(--accent-green);
+    transform: translateY(3px);
+    box-shadow:
+      0 1px 4px rgba(0,0,0,0.85),
+      inset 0 3px 8px rgba(0,0,0,0.32),
+      0 0 20px rgba(0,255,136,0.58);
+  }
+
+  /* --- Hot cue / cue point / loop size buttons --- */
+  .hot-cue, .cue-point, .loop-size {
+    box-shadow:
+      0 3px 5px rgba(0,0,0,0.65),
+      inset 0 1px 0 rgba(255,255,255,0.07),
+      inset 0 -2px 0 rgba(0,0,0,0.5);
+    transition: all 0.08s ease;
+  }
+  .hot-cue:active, .cue-point:active, .loop-size:active {
+    transform: translateY(1px);
+    box-shadow:
+      0 1px 2px rgba(0,0,0,0.75),
+      inset 0 2px 4px rgba(0,0,0,0.55);
+  }
+
+  /* --- Step sequencer buttons: tactile toggles --- */
+  .step-btn {
+    border-radius: 3px;
+    background: linear-gradient(160deg, #1e1e2c 0%, #131320 100%);
+    box-shadow:
+      0 2px 4px rgba(0,0,0,0.65),
+      inset 0 1px 0 rgba(255,255,255,0.05),
+      inset 0 -2px 0 rgba(0,0,0,0.5);
+    transition: all 0.07s ease;
+  }
+  .step-btn:active {
+    transform: translateY(1px);
+    box-shadow:
+      0 0 1px rgba(0,0,0,0.85),
+      inset 0 2px 4px rgba(0,0,0,0.65);
+  }
+  .step-btn.active {
+    background: linear-gradient(160deg, #524600 0%, #3a3200 100%);
+    box-shadow:
+      0 1px 2px rgba(0,0,0,0.65),
+      inset 0 -1px 0 rgba(0,0,0,0.35),
+      0 0 7px rgba(255,221,0,0.32);
+  }
+
+  /* --- Pitch slider: inset channel --- */
+  input[type="range"].pitch-slider {
+    height: 8px;
+    background: linear-gradient(90deg,
+      #060610 0%, #101020 25%, #1c1c2c 50%, #101020 75%, #060610 100%);
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.92);
+    border: 1px solid #07070e;
+    border-radius: 4px;
+  }
+
+  /* --- VU meters: deeper inset, richer gradient --- */
+  .vu-meter {
+    background: linear-gradient(180deg, #030306 0%, #07070e 100%);
+    box-shadow:
+      inset 1px 0 3px rgba(0,0,0,0.95),
+      inset -1px 0 3px rgba(0,0,0,0.95),
+      inset 0 2px 4px rgba(0,0,0,0.97);
+    border: 1px solid #07070e;
+  }
+  .vu-fill {
+    background: linear-gradient(0deg,
+      #00bb44 0%, #33dd44 35%,
+      #cccc00 65%, #ffaa00 80%,
+      #ff4400 92%, #ff0000 100%);
+  }
+
+  /* --- Peak LED: bold glow on clip --- */
+  .peak-light {
+    box-shadow:
+      0 2px 4px rgba(0,0,0,0.75),
+      inset 0 1px 0 rgba(255,255,255,0.14),
+      inset 0 -1px 0 rgba(0,0,0,0.45);
+  }
+  .peak-light.active {
+    box-shadow:
+      0 0 16px rgba(255,221,0,0.95),
+      inset 0 -1px 0 rgba(0,0,0,0.22);
+  }
+
+  /* --- FX unit buttons --- */
+  .fx-btn {
+    box-shadow:
+      0 2px 4px rgba(0,0,0,0.65),
+      inset 0 1px 0 rgba(255,255,255,0.07),
+      inset 0 -2px 0 rgba(0,0,0,0.45);
+    transition: all 0.08s ease;
+  }
+  .fx-btn:active {
+    transform: translateY(1px);
+    box-shadow:
+      0 0 1px rgba(0,0,0,0.85),
+      inset 0 2px 3px rgba(0,0,0,0.55);
+  }
+
+  /* --- Utility buttons: load, library, sampler, seq --- */
+  .load-btn, .library-btn, .sampler-btn, .seq-play-btn {
+    box-shadow:
+      0 3px 6px rgba(0,0,0,0.6),
+      inset 0 1px 0 rgba(255,255,255,0.09),
+      inset 0 -2px 0 rgba(0,0,0,0.5);
+    transition: all 0.1s ease;
+  }
+  .load-btn:active, .library-btn:active, .sampler-btn:active, .seq-play-btn:active {
+    transform: translateY(1px);
+    box-shadow:
+      0 1px 2px rgba(0,0,0,0.8),
+      inset 0 2px 4px rgba(0,0,0,0.48);
+  }
+
+  /* --- EQ section: recessed panel --- */
+  .eq-section {
+    background: rgba(0,0,0,0.28);
+    border-radius: 8px;
+    padding: 6px 4px;
+    border: 1px solid rgba(0,0,0,0.55);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.42);
+  }
+
+  /* --- Deck / mixer surface: subtle top sheen --- */
+  .deck {
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.016) 0%, transparent 22%),
+      var(--bg-panel);
+  }
+  .mixer-section {
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.016) 0%, transparent 22%),
+      var(--bg-panel);
+  }
 </style>
 </head>
 <body>
@@ -1544,7 +1969,7 @@
           <div class="eq-label">GAIN</div>
           <div class="knob-wrap sm" id="gainKnobA" data-min="0" data-max="2" data-val="1" data-channel="A" data-param="gain">
             <svg class="knob-svg" viewBox="0 0 38 38"><circle class="knob-track" cx="19" cy="19" r="14"/><path class="knob-fill" id="gainFillA" stroke="var(--accent-cyan)"/><circle class="knob-body" cx="19" cy="19" r="12" fill="url(#bodyGradA)"/><circle class="knob-dot" id="gainDotA" cx="19" cy="7" r="2"/></svg>
-            <defs><radialGradient id="bodyGradA" cx="40%" cy="35%"><stop offset="0%" stop-color="#333"/><stop offset="100%" stop-color="#111"/></radialGradient></defs>
+            <defs><radialGradient id="bodyGradA" cx="38%" cy="32%"><stop offset="0%" stop-color="#3e3e52"/><stop offset="45%" stop-color="#22222e"/><stop offset="100%" stop-color="#080810"/></radialGradient></defs>
           </div>
         </div>
 
@@ -1554,7 +1979,7 @@
             <div class="eq-label">HI</div>
             <div class="knob-wrap xs" id="hiKnobA" data-min="-15" data-max="15" data-val="0" data-channel="A" data-param="hi">
               <svg class="knob-svg" viewBox="0 0 30 30"><circle class="knob-track" cx="15" cy="15" r="11" stroke-width="4"/><path class="knob-fill" id="hiFillA" stroke="var(--accent-cyan)" stroke-width="4"/><circle cx="15" cy="15" r="9" fill="url(#eqGradA)"/><circle class="knob-dot" id="hiDotA" cx="15" cy="5" r="1.5"/></svg>
-              <defs><radialGradient id="eqGradA" cx="40%" cy="35%"><stop offset="0%" stop-color="#2a2a3a"/><stop offset="100%" stop-color="#111"/></radialGradient></defs>
+              <defs><radialGradient id="eqGradA" cx="38%" cy="32%"><stop offset="0%" stop-color="#30303e"/><stop offset="50%" stop-color="#1a1a26"/><stop offset="100%" stop-color="#070710"/></radialGradient></defs>
             </div>
           </div>
           <div class="eq-row">
@@ -1596,7 +2021,7 @@
           <div class="eq-label">GAIN</div>
           <div class="knob-wrap sm" id="gainKnobB" data-min="0" data-max="2" data-val="1" data-channel="B" data-param="gain">
             <svg class="knob-svg" viewBox="0 0 38 38"><circle class="knob-track" cx="19" cy="19" r="14"/><path class="knob-fill" id="gainFillB" stroke="var(--accent-magenta)"/><circle class="knob-body" cx="19" cy="19" r="12" fill="url(#bodyGradB)"/><circle class="knob-dot" id="gainDotB" cx="19" cy="7" r="2"/></svg>
-            <defs><radialGradient id="bodyGradB" cx="40%" cy="35%"><stop offset="0%" stop-color="#333"/><stop offset="100%" stop-color="#111"/></radialGradient></defs>
+            <defs><radialGradient id="bodyGradB" cx="38%" cy="32%"><stop offset="0%" stop-color="#3e3e52"/><stop offset="45%" stop-color="#22222e"/><stop offset="100%" stop-color="#080810"/></radialGradient></defs>
           </div>
         </div>
 
@@ -1606,7 +2031,7 @@
             <div class="eq-label">HI</div>
             <div class="knob-wrap xs" id="hiKnobB" data-min="-15" data-max="15" data-val="0" data-channel="B" data-param="hi">
               <svg class="knob-svg" viewBox="0 0 30 30"><circle class="knob-track" cx="15" cy="15" r="11" stroke-width="4"/><path class="knob-fill" id="hiFillB" stroke="var(--accent-magenta)" stroke-width="4"/><circle cx="15" cy="15" r="9" fill="url(#eqGradB)"/><circle class="knob-dot" id="hiDotB" cx="15" cy="5" r="1.5"/></svg>
-              <defs><radialGradient id="eqGradB" cx="40%" cy="35%"><stop offset="0%" stop-color="#2a2a3a"/><stop offset="100%" stop-color="#111"/></radialGradient></defs>
+              <defs><radialGradient id="eqGradB" cx="38%" cy="32%"><stop offset="0%" stop-color="#30303e"/><stop offset="50%" stop-color="#1a1a26"/><stop offset="100%" stop-color="#070710"/></radialGradient></defs>
             </div>
           </div>
           <div class="eq-row">
@@ -1657,7 +2082,7 @@
         <div class="fx-unit">
           <div class="fx-name">ECHO</div>
           <div class="knob-wrap xs" id="echoKnob" data-min="0" data-max="1" data-val="0" data-param="echo">
-            <svg class="knob-svg" viewBox="0 0 30 30"><circle class="knob-track" cx="15" cy="15" r="11" stroke-width="4"/><path class="knob-fill" id="echoFill" stroke="#ffdd00" stroke-width="4"/><circle cx="15" cy="15" r="9" fill="#111"/><circle class="knob-dot" id="echoDot" cx="15" cy="5" r="1.5"/></svg>
+            <svg class="knob-svg" viewBox="0 0 30 30"><defs><radialGradient id="fxGrad" cx="38%" cy="32%"><stop offset="0%" stop-color="#2e2e3c"/><stop offset="50%" stop-color="#181820"/><stop offset="100%" stop-color="#06060e"/></radialGradient></defs><circle class="knob-track" cx="15" cy="15" r="11" stroke-width="4"/><path class="knob-fill" id="echoFill" stroke="#ffdd00" stroke-width="4"/><circle cx="15" cy="15" r="9" fill="url(#fxGrad)"/><circle class="knob-dot" id="echoDot" cx="15" cy="5" r="1.5"/></svg>
           </div>
           <div class="fx-assign">
             <button class="fx-btn" id="echoA" onclick="toggleFx('echo','A')">A</button>
@@ -1667,7 +2092,7 @@
         <div class="fx-unit">
           <div class="fx-name">REVERB</div>
           <div class="knob-wrap xs" id="reverbKnob" data-min="0" data-max="1" data-val="0" data-param="reverb">
-            <svg class="knob-svg" viewBox="0 0 30 30"><circle class="knob-track" cx="15" cy="15" r="11" stroke-width="4"/><path class="knob-fill" id="reverbFill" stroke="#ff6600" stroke-width="4"/><circle cx="15" cy="15" r="9" fill="#111"/><circle class="knob-dot" id="reverbDot" cx="15" cy="5" r="1.5"/></svg>
+            <svg class="knob-svg" viewBox="0 0 30 30"><circle class="knob-track" cx="15" cy="15" r="11" stroke-width="4"/><path class="knob-fill" id="reverbFill" stroke="#ff6600" stroke-width="4"/><circle cx="15" cy="15" r="9" fill="url(#fxGrad)"/><circle class="knob-dot" id="reverbDot" cx="15" cy="5" r="1.5"/></svg>
           </div>
           <div class="fx-assign">
             <button class="fx-btn" id="reverbA" onclick="toggleFx('reverb','A')">A</button>
@@ -1677,7 +2102,7 @@
         <div class="fx-unit">
           <div class="fx-name">FLANGER</div>
           <div class="knob-wrap xs" id="flangerKnob" data-min="0" data-max="1" data-val="0" data-param="flanger">
-            <svg class="knob-svg" viewBox="0 0 30 30"><circle class="knob-track" cx="15" cy="15" r="11" stroke-width="4"/><path class="knob-fill" id="flangerFill" stroke="#00ff88" stroke-width="4"/><circle cx="15" cy="15" r="9" fill="#111"/><circle class="knob-dot" id="flangerDot" cx="15" cy="5" r="1.5"/></svg>
+            <svg class="knob-svg" viewBox="0 0 30 30"><circle class="knob-track" cx="15" cy="15" r="11" stroke-width="4"/><path class="knob-fill" id="flangerFill" stroke="#00ff88" stroke-width="4"/><circle cx="15" cy="15" r="9" fill="url(#fxGrad)"/><circle class="knob-dot" id="flangerDot" cx="15" cy="5" r="1.5"/></svg>
           </div>
           <div class="fx-assign">
             <button class="fx-btn" id="flangerA" onclick="toggleFx('flanger','A')">A</button>
@@ -1687,7 +2112,7 @@
         <div class="fx-unit">
           <div class="fx-name">FILTER</div>
           <div class="knob-wrap xs" id="filterKnob" data-min="200" data-max="18000" data-val="18000" data-param="filter">
-            <svg class="knob-svg" viewBox="0 0 30 30"><circle class="knob-track" cx="15" cy="15" r="11" stroke-width="4"/><path class="knob-fill" id="filterFill" stroke="#aa88ff" stroke-width="4"/><circle cx="15" cy="15" r="9" fill="#111"/><circle class="knob-dot" id="filterDot" cx="15" cy="5" r="1.5"/></svg>
+            <svg class="knob-svg" viewBox="0 0 30 30"><circle class="knob-track" cx="15" cy="15" r="11" stroke-width="4"/><path class="knob-fill" id="filterFill" stroke="#aa88ff" stroke-width="4"/><circle cx="15" cy="15" r="9" fill="url(#fxGrad)"/><circle class="knob-dot" id="filterDot" cx="15" cy="5" r="1.5"/></svg>
           </div>
           <div class="fx-assign">
             <button class="fx-btn" id="filterA" onclick="toggleFx('filter','A')">A</button>
@@ -3258,6 +3683,7 @@ function initKnob(id) {
     startVal = getVal();
     e.preventDefault();
     document.body.style.cursor = 'ns-resize';
+    el.classList.add('knob-pressed');
   });
   document.addEventListener('mousemove', e => {
     if (!dragging) return;
@@ -3271,6 +3697,7 @@ function initKnob(id) {
     if (dragging) {
       dragging = false;
       document.body.style.cursor = '';
+      el.classList.remove('knob-pressed');
     }
   });
 
@@ -3338,6 +3765,54 @@ function renderKnob(id, val, min, max) {
     const dotR = r - 3;
     dotEl.setAttribute('cx', cx + dotR * Math.cos(currentAngle));
     dotEl.setAttribute('cy', cy + dotR * Math.sin(currentAngle));
+  }
+
+  const svgNS = 'http://www.w3.org/2000/svg';
+  const svg = el.querySelector('.knob-svg');
+  if (!svg) return;
+
+  // --- Tick marks (added once) ---
+  if (!svg.querySelector('.knob-ticks')) {
+    const tickCount = 10;
+    const outerR = r + (isSmall ? 5.5 : 4.5);
+    const innerR = r + (isSmall ? 2.5 : 2);
+    const g = document.createElementNS(svgNS, 'g');
+    g.setAttribute('class', 'knob-ticks');
+    for (let i = 0; i <= tickCount; i++) {
+      const angle = startAngle + (i / tickCount) * totalAngle;
+      const isMajor = (i === 0 || i === tickCount || i === tickCount / 2);
+      const ro = isMajor ? outerR + 1 : outerR;
+      const ri = isMajor ? innerR : innerR + 0.5;
+      const lx1 = cx + ro * Math.cos(angle);
+      const ly1 = cy + ro * Math.sin(angle);
+      const lx2 = cx + ri * Math.cos(angle);
+      const ly2 = cy + ri * Math.sin(angle);
+      const line = document.createElementNS(svgNS, 'line');
+      line.setAttribute('x1', lx1); line.setAttribute('y1', ly1);
+      line.setAttribute('x2', lx2); line.setAttribute('y2', ly2);
+      line.setAttribute('stroke', isMajor ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.14)');
+      line.setAttribute('stroke-width', isMajor ? '1.4' : '0.8');
+      line.setAttribute('stroke-linecap', 'round');
+      g.appendChild(line);
+    }
+    svg.insertBefore(g, svg.firstChild);
+  }
+
+  // --- Highlight arc (top-left reflection, added once) ---
+  if (!svg.querySelector('.knob-highlight')) {
+    const hlEl = document.createElementNS(svgNS, 'path');
+    hlEl.setAttribute('class', 'knob-highlight');
+    hlEl.setAttribute('fill', 'none');
+    hlEl.setAttribute('stroke', 'rgba(255,255,255,0.14)');
+    hlEl.setAttribute('stroke-width', isSmall ? '2' : '1.5');
+    hlEl.setAttribute('stroke-linecap', 'round');
+    const hlR = isSmall ? 9 : (isXS ? 7 : 16);
+    const hlS = -160 * (Math.PI / 180);
+    const hlE = -80 * (Math.PI / 180);
+    const hx1 = cx + hlR * Math.cos(hlS), hy1 = cy + hlR * Math.sin(hlS);
+    const hx2 = cx + hlR * Math.cos(hlE), hy2 = cy + hlR * Math.sin(hlE);
+    hlEl.setAttribute('d', `M ${hx1} ${hy1} A ${hlR} ${hlR} 0 0 1 ${hx2} ${hy2}`);
+    svg.appendChild(hlEl);
   }
 }
 
