@@ -1144,10 +1144,10 @@
 
     <!-- Auto Loop Size Buttons -->
     <div class="loop-size-row">
-      <button class="btn btn-loop-size" onclick="setLoopSize('A', 0.5)">1/2</button>
-      <button class="btn btn-loop-size" onclick="setLoopSize('A', 0.25)">1/4</button>
-      <button class="btn btn-loop-size" onclick="setLoopSize('A', 0.125)">1/8</button>
-      <button class="btn btn-loop-size" onclick="setLoopSize('A', 0.0625)">1/16</button>
+      <button class="loop-size" onclick="setLoopSize('A', 0.5)">1/2</button>
+      <button class="loop-size" onclick="setLoopSize('A', 0.25)">1/4</button>
+      <button class="loop-size" onclick="setLoopSize('A', 0.125)">1/8</button>
+      <button class="loop-size" onclick="setLoopSize('A', 0.0625)">1/16</button>
     </div>
 
     <div class="pitch-section">
@@ -1158,17 +1158,10 @@
     </div>
 
     <div class="hot-cues">
-      <button class="hot-cue" data-cue="1" onclick="handleHotCue('A', 1)">1</button>
-      <button class="hot-cue" data-cue="2" onclick="handleHotCue('A', 2)">2</button>
-      <button class="hot-cue" data-cue="3" onclick="handleHotCue('A', 3)">3</button>
-      <button class="hot-cue" data-cue="4" onclick="handleHotCue('A', 4)">4</button>
-    </div>
-
-    <div class="loop-sizes">
-      <button class="loop-size" onclick="setLoopSize('A', 0.5)">1/2</button>
-      <button class="loop-size" onclick="setLoopSize('A', 0.25)">1/4</button>
-      <button class="loop-size" onclick="setLoopSize('A', 0.125)">1/8</button>
-      <button class="loop-size" onclick="setLoopSize('A', 0.0625)">1/16</button>
+      <button class="hot-cue" data-cue="1" onclick="handleHotCue('A', 1, event)">1</button>
+      <button class="hot-cue" data-cue="2" onclick="handleHotCue('A', 2, event)">2</button>
+      <button class="hot-cue" data-cue="3" onclick="handleHotCue('A', 3, event)">3</button>
+      <button class="hot-cue" data-cue="4" onclick="handleHotCue('A', 4, event)">4</button>
     </div>
   </div>
 
@@ -1383,10 +1376,10 @@
 
     <!-- Auto Loop Size Buttons -->
     <div class="loop-size-row">
-      <button class="btn btn-loop-size" onclick="setLoopSize('B', 0.5)">1/2</button>
-      <button class="btn btn-loop-size" onclick="setLoopSize('B', 0.25)">1/4</button>
-      <button class="btn btn-loop-size" onclick="setLoopSize('B', 0.125)">1/8</button>
-      <button class="btn btn-loop-size" onclick="setLoopSize('B', 0.0625)">1/16</button>
+      <button class="loop-size" onclick="setLoopSize('B', 0.5)">1/2</button>
+      <button class="loop-size" onclick="setLoopSize('B', 0.25)">1/4</button>
+      <button class="loop-size" onclick="setLoopSize('B', 0.125)">1/8</button>
+      <button class="loop-size" onclick="setLoopSize('B', 0.0625)">1/16</button>
     </div>
 
     <div class="pitch-section">
@@ -1397,17 +1390,10 @@
     </div>
 
     <div class="hot-cues">
-      <button class="hot-cue" data-cue="1" onclick="handleHotCue('B', 1)">1</button>
-      <button class="hot-cue" data-cue="2" onclick="handleHotCue('B', 2)">2</button>
-      <button class="hot-cue" data-cue="3" onclick="handleHotCue('B', 3)">3</button>
-      <button class="hot-cue" data-cue="4" onclick="handleHotCue('B', 4)">4</button>
-    </div>
-
-    <div class="loop-sizes">
-      <button class="loop-size" onclick="setLoopSize('B', 0.5)">1/2</button>
-      <button class="loop-size" onclick="setLoopSize('B', 0.25)">1/4</button>
-      <button class="loop-size" onclick="setLoopSize('B', 0.125)">1/8</button>
-      <button class="loop-size" onclick="setLoopSize('B', 0.0625)">1/16</button>
+      <button class="hot-cue" data-cue="1" onclick="handleHotCue('B', 1, event)">1</button>
+      <button class="hot-cue" data-cue="2" onclick="handleHotCue('B', 2, event)">2</button>
+      <button class="hot-cue" data-cue="3" onclick="handleHotCue('B', 3, event)">3</button>
+      <button class="hot-cue" data-cue="4" onclick="handleHotCue('B', 4, event)">4</button>
     </div>
   </div>
 
@@ -1779,7 +1765,7 @@ function handleFile(e, id) {
 
       // Reset hot cues
       d.hotCues = [null, null, null, null];
-      document.querySelectorAll(`.deck-${id.toLowerCase()} .hot-cue`).forEach(btn => {
+      document.querySelectorAll(`#deck${id} .hot-cue`).forEach(btn => {
         btn.classList.remove('set', 'cue-1', 'cue-2', 'cue-3', 'cue-4');
       });
 
@@ -1990,10 +1976,11 @@ function getCurrentTime(id) {
 // ----------------------------------------------------------------
 //  HOT CUES
 // ----------------------------------------------------------------
-function handleHotCue(deckId, cueIndex) {
+function handleHotCue(deckId, cueIndex, event) {
   const d = decks[deckId];
-  const cueBtn = document.querySelector(`.deck-${deckId.toLowerCase()} .hot-cue[data-cue="${cueIndex}"]`);
-  if (event.shiftKey) {
+  const cueBtn = document.querySelector(`#deck${deckId} .hot-cue[data-cue="${cueIndex}"]`);
+  if (!cueBtn) return;
+  if (event && event.shiftKey) {
     // Set cue
     if (d.buffer) {
       d.hotCues[cueIndex - 1] = getCurrentTime(deckId);
@@ -2064,9 +2051,12 @@ function setLoopSize(id, beatFraction) {
 
   document.getElementById('loop' + id).classList.add('active');
 
-  // Clear any previous loop size button active states
-  document.querySelectorAll(`.deck-${id.toLowerCase()} .btn-loop-size`).forEach(btn => btn.classList.remove('active'));
-  // Set the clicked button as active (we'll need to modify this to track which one is active)
+  // Update button states - find which button was clicked and mark it active
+  const fractionStr = beatFraction.toString();
+  document.querySelectorAll(`#deck${id} .loop-size`).forEach(btn => {
+    const onclick = btn.getAttribute('onclick');
+    btn.classList.toggle('active', onclick.includes(fractionStr));
+  });
 }
 
 // ----------------------------------------------------------------
