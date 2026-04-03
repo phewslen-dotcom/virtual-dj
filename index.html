@@ -551,6 +551,48 @@
   .hot-cue.cue-3.set { background: linear-gradient(135deg, #4444ff, #2222cc); border-color: rgba(68,68,255,0.6); box-shadow: 0 0 8px rgba(68,68,255,0.4); }
   .hot-cue.cue-4.set { background: linear-gradient(135deg, #ffff44, #cccc22); border-color: rgba(255,255,68,0.6); box-shadow: 0 0 8px rgba(255,255,68,0.4); }
 
+  /* ===== CUE POINTS ===== */
+  .cue-points {
+    display: flex;
+    gap: 4px;
+    margin-top: 8px;
+  }
+  .cue-point {
+    background: var(--bg-control);
+    border: 1px solid var(--border-color);
+    color: var(--text-dim);
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 7px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    min-width: 36px;
+  }
+  .cue-point:hover {
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+  }
+  .cue-point.set {
+    background: linear-gradient(135deg, #005577, #003366);
+    border-color: rgba(0,245,255,0.4);
+    color: var(--accent-cyan);
+    box-shadow: 0 0 8px rgba(0,245,255,0.3);
+  }
+  .cue-point-label {
+    font-size: 6px;
+    opacity: 0.7;
+  }
+  .cue-point-time {
+    font-size: 7px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+
   .loop-sizes {
     display: flex;
     gap: 4px;
@@ -1008,6 +1050,82 @@
     border-color: var(--accent-green);
   }
 
+  /* ===== SAMPLER PADS ===== */
+  .sampler-section {
+    background: var(--bg-secondary);
+    border-top: 2px solid var(--accent-green);
+    border-radius: 6px;
+    padding: 12px 20px;
+    margin: 20px auto;
+    max-width: 1200px;
+    width: 90%;
+  }
+  .sampler-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .sampler-title {
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--accent-green);
+    text-shadow: 0 0 8px rgba(0,255,136,0.5);
+  }
+  .sampler-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .sampler-pad {
+    aspect-ratio: 1;
+    background: var(--bg-control);
+    border: 2px solid var(--border-color);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: bold;
+    color: var(--text-dim);
+    transition: all 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Orbitron', sans-serif;
+  }
+  .sampler-pad:hover {
+    border-color: var(--accent-green);
+    color: var(--accent-green);
+  }
+  .sampler-pad.active {
+    background: var(--accent-green);
+    color: var(--bg-primary);
+    box-shadow: 0 0 15px rgba(0,255,136,0.6);
+    transform: scale(0.95);
+  }
+  .sampler-controls {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+  }
+  .sampler-btn {
+    background: linear-gradient(135deg, #1a4d1a, #2d8a2d);
+    border: 1px solid rgba(0,255,136,0.4);
+    color: var(--accent-green);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 9px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .sampler-btn:hover {
+    border-color: var(--accent-green);
+    box-shadow: 0 0 10px rgba(0,255,136,0.3);
+  }
+
   .sequencer-grid {
     display: flex;
     flex-direction: column;
@@ -1162,6 +1280,21 @@
       <button class="hot-cue" data-cue="2" onclick="handleHotCue('A', 2, event)">2</button>
       <button class="hot-cue" data-cue="3" onclick="handleHotCue('A', 3, event)">3</button>
       <button class="hot-cue" data-cue="4" onclick="handleHotCue('A', 4, event)">4</button>
+    </div>
+
+    <div class="cue-points">
+      <button class="cue-point" onclick="handleCuePoint('A', 'intro', event)" title="Shift+click to set">
+        <span class="cue-point-label">INTRO</span>
+        <span class="cue-point-time" id="cueTimeA_intro">--:--</span>
+      </button>
+      <button class="cue-point" onclick="handleCuePoint('A', 'break', event)" title="Shift+click to set">
+        <span class="cue-point-label">BREAK</span>
+        <span class="cue-point-time" id="cueTimeA_break">--:--</span>
+      </button>
+      <button class="cue-point" onclick="handleCuePoint('A', 'outro', event)" title="Shift+click to set">
+        <span class="cue-point-label">OUTRO</span>
+        <span class="cue-point-time" id="cueTimeA_outro">--:--</span>
+      </button>
     </div>
   </div>
 
@@ -1395,6 +1528,35 @@
       <button class="hot-cue" data-cue="3" onclick="handleHotCue('B', 3, event)">3</button>
       <button class="hot-cue" data-cue="4" onclick="handleHotCue('B', 4, event)">4</button>
     </div>
+
+    <div class="cue-points">
+      <button class="cue-point" onclick="handleCuePoint('B', 'intro', event)" title="Shift+click to set">
+        <span class="cue-point-label">INTRO</span>
+        <span class="cue-point-time" id="cueTimeB_intro">--:--</span>
+      </button>
+      <button class="cue-point" onclick="handleCuePoint('B', 'break', event)" title="Shift+click to set">
+        <span class="cue-point-label">BREAK</span>
+        <span class="cue-point-time" id="cueTimeB_break">--:--</span>
+      </button>
+      <button class="cue-point" onclick="handleCuePoint('B', 'outro', event)" title="Shift+click to set">
+        <span class="cue-point-label">OUTRO</span>
+        <span class="cue-point-time" id="cueTimeB_outro">--:--</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ====== SAMPLER PADS ====== -->
+  <div class="sampler-section">
+    <div class="sampler-header">
+      <div class="sampler-title">🎹 SAMPLER PADS</div>
+      <div class="sampler-controls">
+        <button class="sampler-btn" onclick="clearSamplerBank()">CLEAR</button>
+        <button class="sampler-btn" onclick="cycleSamplerBank()">BANK</button>
+      </div>
+    </div>
+    <div class="sampler-grid" id="samplerGrid">
+      <!-- Pads will be generated by JS -->
+    </div>
   </div>
 
   <!-- ====== STEP SEQUENCER ====== -->
@@ -1467,7 +1629,8 @@ const decks = {
     hiFilter: null, midFilter: null, lowFilter: null,
     echoWet: null, reverbWet: null, flangerWet: null, filterNode: null,
     waveformData: null, animFrame: null,
-    hotCues: [null, null, null, null]
+    hotCues: [null, null, null, null],
+    cuePoints: { intro: null, break: null, outro: null }
   },
   B: {
     buffer: null, source: null, startTime: 0, pauseOffset: 0,
@@ -1479,7 +1642,8 @@ const decks = {
     hiFilter: null, midFilter: null, lowFilter: null,
     echoWet: null, reverbWet: null, flangerWet: null, filterNode: null,
     waveformData: null, animFrame: null,
-    hotCues: [null, null, null, null]
+    hotCues: [null, null, null, null],
+    cuePoints: { intro: null, break: null, outro: null }
   }
 };
 
@@ -1769,6 +1933,14 @@ function handleFile(e, id) {
         btn.classList.remove('set', 'cue-1', 'cue-2', 'cue-3', 'cue-4');
       });
 
+      // Reset cue points
+      d.cuePoints = { intro: null, break: null, outro: null };
+      document.querySelectorAll(`#deck${id} .cue-point`).forEach(btn => {
+        btn.classList.remove('set');
+        const timeEl = btn.querySelector('.cue-point-time');
+        if (timeEl) timeEl.textContent = '--:--';
+      });
+
       buildAudioGraph(id);
       drawStaticWaveform(id);
     } catch(err) {
@@ -2015,6 +2187,40 @@ function cueAction(id) {
   }
   document.getElementById('cue' + id).classList.add('active');
   setTimeout(() => document.getElementById('cue' + id).classList.remove('active'), 200);
+}
+
+function handleCuePoint(deckId, pointType, event) {
+  const d = decks[deckId];
+  const cueBtn = event.target.closest('.cue-point');
+  if (!cueBtn) return;
+
+  if (event && event.shiftKey) {
+    // Set cue point at current position
+    if (d.buffer) {
+      d.cuePoints[pointType] = getCurrentTime(deckId);
+      cueBtn.classList.add('set');
+      // Update time display
+      const timeEl = document.getElementById(`cueTime${deckId}_${pointType}`);
+      if (timeEl) timeEl.textContent = formatTime(d.cuePoints[pointType]);
+    }
+  } else {
+    // Jump to cue point
+    const cueTime = d.cuePoints[pointType];
+    if (cueTime !== null && d.buffer) {
+      const wasPlaying = d.playing;
+      if (wasPlaying) pauseDeck(deckId);
+      d.pauseOffset = cueTime;
+      if (wasPlaying) playDeck(deckId, cueTime);
+      else updatePlayhead(deckId);
+    }
+  }
+}
+
+function formatTime(seconds) {
+  if (seconds === null || seconds === undefined) return '--:--';
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  return `${mins}:${secs.toString().padStart(2, '0')}`;
 }
 
 // ----------------------------------------------------------------
@@ -2561,6 +2767,110 @@ function applyFxWet(fx) {
 }
 
 // ----------------------------------------------------------------
+//  SAMPLER PADS
+// ----------------------------------------------------------------
+const samplerState = {
+  bank: 0,
+  pads: Array(64).fill(null), // 8 banks x 8 pads
+  activeSet: Array(8).fill(false)
+};
+
+const padSounds = [
+  { name: '1: KICK', freq: 80, env: 0.15 },
+  { name: '2: SNARE', freq: 150, env: 0.08 },
+  { name: '3: CLAP', freq: 200, env: 0.1 },
+  { name: '4: HI-HAT', freq: 8000, env: 0.05 },
+  { name: '5: PERC', freq: 300, env: 0.12 },
+  { name: '6: COWBELL', freq: 600, env: 0.2 },
+  { name: '7: TOM-HI', freq: 500, env: 0.08 },
+  { name: '8: TOM-LOW', freq: 200, env: 0.1 }
+];
+
+function initSamplerGrid() {
+  const grid = document.getElementById('samplerGrid');
+  grid.innerHTML = '';
+  for (let i = 0; i < 8; i++) {
+    const pad = document.createElement('div');
+    pad.className = 'sampler-pad';
+    pad.innerHTML = i + 1;
+    pad.dataset.padIndex = i;
+    pad.onmousedown = () => triggerSamplerPad(i);
+    pad.onmouseup = () => releaseSamplerPad(i);
+    pad.onmouseleave = () => releaseSamplerPad(i);
+    grid.appendChild(pad);
+  }
+}
+
+function triggerSamplerPad(index) {
+  const ctx = getAudioCtx();
+  if (!ctx) return;
+
+  const padIndex = samplerState.bank * 8 + index;
+  const sound = padSounds[index % padSounds.length];
+
+  // Update UI
+  samplerState.activeSet[index] = true;
+  const pad = document.querySelector(`[data-pad-index="${index}"]`);
+  if (pad) pad.classList.add('active');
+
+  // Synthesize sound
+  const now = ctx.currentTime;
+  const duration = sound.env;
+  const attack = 0.01;
+
+  // Volume control
+  const gainNode = ctx.createGain();
+  gainNode.gain.setValueAtTime(0, now);
+  gainNode.gain.linearRampToValueAtTime(0.6, now + attack);
+  gainNode.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+  // Oscillator for tone
+  const osc = ctx.createOscillator();
+  osc.type = index % 2 === 0 ? 'triangle' : 'sine';
+  osc.frequency.setValueAtTime(sound.freq, now);
+  osc.frequency.exponentialRampToValueAtTime(Math.max(20, sound.freq * 0.3), now + duration);
+
+  // Noise for hi-hats
+  if (sound.freq > 5000) {
+    const bufSize = ctx.sampleRate * duration;
+    const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    src.connect(gainNode);
+    gainNode.connect(ctx.destination);
+    src.start(now);
+    src.stop(now + duration);
+  } else {
+    osc.connect(gainNode);
+    gainNode.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + duration);
+  }
+}
+
+function releaseSamplerPad(index) {
+  samplerState.activeSet[index] = false;
+  const pad = document.querySelector(`[data-pad-index="${index}"]`);
+  if (pad) pad.classList.remove('active');
+}
+
+function clearSamplerBank() {
+  const start = samplerState.bank * 8;
+  for (let i = 0; i < 8; i++) {
+    samplerState.pads[start + i] = null;
+  }
+}
+
+function cycleSamplerBank() {
+  samplerState.bank = (samplerState.bank + 1) % 8;
+  initSamplerGrid();
+}
+
+// ----------------------------------------------------------------
 //  STEP SEQUENCER
 // ----------------------------------------------------------------
 function toggleSequencer() {
@@ -2853,6 +3163,9 @@ window.addEventListener('load', () => {
 
   // Init sequencer
   initSequencerGrid();
+
+  // Init sampler
+  initSamplerGrid();
 });
 
 // ----------------------------------------------------------------
