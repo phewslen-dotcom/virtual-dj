@@ -985,6 +985,61 @@
     box-shadow: 0 0 6px rgba(255,0,170,0.3);
   }
 
+  /* ===== MASTER SECTION ===== */
+  .master-section {
+    border-top: 1px solid var(--border-color);
+    padding-top: 10px;
+    margin-top: 10px;
+  }
+  .master-title {
+    font-size: 8px;
+    letter-spacing: 3px;
+    color: var(--accent-yellow);
+    text-align: center;
+    margin-bottom: 8px;
+    text-shadow: 0 0 6px rgba(255,221,0,0.3);
+  }
+  .master-controls {
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .master-fader-wrap {
+    display: flex;
+    justify-content: center;
+  }
+  .master-meters {
+    display: flex;
+    gap: 3px;
+  }
+  .peak-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    height: 70px;
+    gap: 2px;
+  }
+  .peak-light {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    border: 1px solid var(--accent-yellow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 6px;
+    font-weight: bold;
+    color: var(--accent-yellow);
+    transition: all 0.1s;
+  }
+  .peak-light.active {
+    background: var(--accent-yellow);
+    color: var(--bg-primary);
+    box-shadow: 0 0 10px rgba(255,221,0,0.6);
+  }
+
   /* ===== STEP SEQUENCER ===== */
   .step-sequencer {
     background: var(--bg-panel);
@@ -1464,6 +1519,31 @@
         </div>
       </div>
     </div>
+
+    <!-- Master Volume -->
+    <div class="master-section">
+      <div class="master-title">— MASTER —</div>
+      <div class="master-controls">
+        <div class="master-fader-wrap">
+          <div class="fader-container">
+            <div class="fader-label">VOL</div>
+            <div class="fader-track" id="masterFader" data-val="0.8">
+              <div class="fader-fill" id="masterFaderFill" style="height:80%"></div>
+              <div class="fader-thumb" id="masterFaderThumb" style="bottom: calc(80% - 6px)"></div>
+            </div>
+          </div>
+        </div>
+        <div class="master-meters">
+          <div class="vu-pair">
+            <div class="vu-meter"><div class="vu-fill" id="vuMasterL"></div></div>
+            <div class="vu-meter"><div class="vu-fill" id="vuMasterR"></div></div>
+          </div>
+        </div>
+        <div class="peak-indicator">
+          <div class="peak-light" id="peakIndicator" style="background: #333;">LP</div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- ====== DECK B ====== -->
@@ -1652,7 +1732,10 @@ let masterDeck = null;
 
 // ---- Master Nodes ----
 let masterGainA = null, masterGainB = null;
+let masterGain = null; // Overall master volume
+let masterAnalyserL = null, masterAnalyserR = null; // For peak detection
 let crossValue = 0.5; // 0=full A, 1=full B
+let masterPeakValue = 0; // Current peak level (0-1)
 
 // ---- Recording ----
 let mediaRecorder = null;
@@ -2540,10 +2623,86 @@ function initFader(trackId, deckId) {
 
 initFader('faderA', 'A');
 initFader('faderB', 'B');
+initMasterFader();
 
 // ----------------------------------------------------------------
-//  CROSSFADER DRAG
+//  MASTER FADER
 // ----------------------------------------------------------------
+function initMasterFader() {
+  const track = document.getElementById('masterFader');
+  const thumb = document.getElementById('masterFaderThumb');
+  const fill = document.getElementById('masterFaderFill');
+  let dragging = false, startY, startVal = 0.8;
+
+  function setMasterVol(val) {
+    val = Math.max(0, Math.min(1, val));
+    const pct = val * 100;
+    fill.style.height = pct + '%';
+    thumb.style.bottom = `calc(${pct}% - 6px)`;
+
+    const ctx = getAudioCtx();
+    if (masterGain) {
+      masterGain.gain.setTargetAtTime(val, ctx.currentTime, 0.05);
+    }
+  }
+
+  track.addEventListener('mousedown', e => {
+    dragging = true;
+    startY = e.clientY;
+    startVal = parseFloat(track.dataset.val) || 0.8;
+    e.preventDefault();
+  });
+  thumb.addEventListener('mousedown', e => {
+    dragging = true;
+    startY = e.clientY;
+    startVal = parseFloat(track.dataset.val) || 0.8;
+    e.preventDefault();
+    e.stopPropagation();
+  });
+
+  document.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    const rect = track.getBoundingClientRect();
+    const h = rect.height;
+    const dy = startY - e.clientY;
+    const dv = dy / h;
+    const newVal = startVal + dv;
+    setMasterVol(newVal);
+    track.dataset.val = newVal;
+  });
+  document.addEventListener('mouseup', () => { dragging = false; });
+
+  // Initialize
+  setMasterVol(0.8);
+}
+
+// ----------------------------------------------------------------
+//  PEAK DETECTION
+// ----------------------------------------------------------------
+function updateMasterMeters() {
+  if (!masterAnalyserL || !masterAnalyserR) return;
+
+  const dataL = new Uint8Array(masterAnalyserL.frequencyBinCount);
+  const dataR = new Uint8Array(masterAnalyserR.frequencyBinCount);
+  masterAnalyserL.getByteFrequencyData(dataL);
+  masterAnalyserR.getByteFrequencyData(dataR);
+
+  const peakL = Math.max(...dataL) / 255;
+  const peakR = Math.max(...dataR) / 255;
+  const peak = Math.max(peakL, peakR);
+
+  // Update VU meters
+  document.getElementById('vuMasterL').style.height = (peakL * 100) + '%';
+  document.getElementById('vuMasterR').style.height = (peakR * 100) + '%';
+
+  // Update peak indicator
+  const indicator = document.getElementById('peakIndicator');
+  if (peak > 0.9) {
+    indicator.classList.add('active');
+    masterPeakValue = peak;
+  }
+}
+
 (function() {
   const track = document.getElementById('crossfaderTrack');
   const thumb = document.getElementById('crossfaderThumb');
@@ -3147,6 +3306,29 @@ window.addEventListener('load', () => {
   if (!masterGainA) { masterGainA = ctx.createGain(); masterGainA.connect(ctx.destination); masterGainA.gain.value = 1; }
   if (!masterGainB) { masterGainB = ctx.createGain(); masterGainB.connect(ctx.destination); masterGainB.gain.value = 1; }
 
+  // Initialize master volume control
+  if (!masterGain) {
+    masterGain = ctx.createGain();
+    masterGain.gain.value = 0.8;
+    masterGainA.connect(masterGain);
+    masterGainB.connect(masterGain);
+    masterGain.connect(ctx.destination);
+
+    // Remove old direct connections
+    try {
+      masterGainA.disconnect(ctx.destination);
+      masterGainB.disconnect(ctx.destination);
+    } catch (e) {}
+
+    // Initialize master analysers for peak detection
+    masterAnalyserL = ctx.createAnalyser();
+    masterAnalyserR = ctx.createAnalyser();
+    masterAnalyserL.fftSize = 256;
+    masterAnalyserR.fftSize = 256;
+    masterGain.connect(masterAnalyserL);
+    masterGain.connect(masterAnalyserR);
+  }
+
   // Draw empty waveforms
   ['A','B'].forEach(id => {
     const canvas = document.getElementById('waveform' + id);
@@ -3166,6 +3348,9 @@ window.addEventListener('load', () => {
 
   // Init sampler
   initSamplerGrid();
+
+  // Start master meter updates
+  setInterval(updateMasterMeters, 50);
 });
 
 // ----------------------------------------------------------------
