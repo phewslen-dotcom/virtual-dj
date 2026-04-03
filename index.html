@@ -1054,6 +1054,67 @@
     box-shadow: 0 0 10px rgba(255,221,0,0.6);
   }
 
+  /* ===== BEAT SYNC INDICATOR ===== */
+  .beat-sync-section {
+    border-top: 1px solid var(--border-color);
+    padding-top: 10px;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .beat-sync-title {
+    font-size: 8px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    text-align: center;
+  }
+  .beat-sync-bars {
+    display: flex;
+    gap: 4px;
+    height: 32px;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .sync-bar {
+    flex: 1;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    position: relative;
+    min-width: 8px;
+    transition: all 0.1s ease;
+  }
+  .sync-bar.synced {
+    border-color: var(--accent-green);
+    box-shadow: 0 0 8px rgba(0,255,136,0.3);
+  }
+  .sync-bar-fill {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(180deg, var(--accent-cyan), var(--accent-magenta));
+    border-radius: 2px;
+    transition: height 0.1s ease;
+  }
+  .sync-indicator {
+    text-align: center;
+    font-size: 10px;
+    color: var(--accent-green);
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-shadow: 0 0 8px rgba(0,255,136,0.4);
+  }
+  .sync-indicator.poor {
+    color: var(--accent-orange);
+    text-shadow: 0 0 8px rgba(255,102,0,0.4);
+  }
+  .sync-indicator.bad {
+    color: #ff4444;
+    text-shadow: 0 0 8px rgba(255,68,68,0.4);
+  }
+
   /* ===== STEP SEQUENCER ===== */
   .step-sequencer {
     background: var(--bg-panel);
@@ -1558,6 +1619,18 @@
           <div class="peak-light" id="peakIndicator" style="background: #333;">LP</div>
         </div>
       </div>
+    </div>
+
+    <!-- Beat Sync Indicator -->
+    <div class="beat-sync-section">
+      <div class="beat-sync-title">BEAT SYNC</div>
+      <div class="beat-sync-bars" id="beatSyncBars">
+        <div class="sync-bar"><div class="sync-bar-fill" style="height: 50%"></div></div>
+        <div class="sync-bar"><div class="sync-bar-fill" style="height: 30%"></div></div>
+        <div class="sync-bar"><div class="sync-bar-fill" style="height: 100%"></div></div>
+        <div class="sync-bar"><div class="sync-bar-fill" style="height: 40%"></div></div>
+      </div>
+      <div class="sync-indicator" id="syncIndicator">SYNCED ✓</div>
     </div>
   </div>
 
@@ -2786,6 +2859,83 @@ function updateMasterMeters() {
   }
 }
 
+// ----------------------------------------------------------------
+//  BEAT SYNC INDICATOR
+// ----------------------------------------------------------------
+function updateBeatSync() {
+  const dA = decks.A;
+  const dB = decks.B;
+
+  // If either deck is not loaded, show neutral state
+  if (!dA.buffer || !dB.buffer || !dA.bpm || !dB.bpm) {
+    updateSyncUI(0, '--');
+    return;
+  }
+
+  // Calculate time positions relative to beat
+  const timeA = getCurrentTime('A');
+  const timeB = getCurrentTime('B');
+
+  if (!isFinite(timeA) || !isFinite(timeB)) {
+    updateSyncUI(0, '--');
+    return;
+  }
+
+  // Get beat durations in seconds
+  const beatDurationA = 60 / dA.bpm / dA.pitchRate;
+  const beatDurationB = 60 / dB.bpm / dB.pitchRate;
+
+  // Calculate position within beat (0-1)
+  const beatPhaseA = (timeA % beatDurationA) / beatDurationA;
+  const beatPhaseB = (timeB % beatDurationB) / beatDurationB;
+
+  // Calculate phase difference (how much off-sync in milliseconds)
+  let phaseDiff = Math.abs(beatPhaseA - beatPhaseB);
+  if (phaseDiff > 0.5) phaseDiff = 1 - phaseDiff;
+
+  // Convert to sync quality percentage (0-100)
+  // 0 = perfect sync, 1 = completely out of sync
+  const syncQuality = Math.max(0, 100 * (1 - phaseDiff * 2));
+
+  // Determine sync status
+  let status = 'SYNCED ✓';
+  if (syncQuality < 70) status = 'POOR';
+  if (syncQuality < 40) status = 'OUT OF SYNC';
+
+  updateSyncUI(syncQuality, status);
+}
+
+function updateSyncUI(quality, status) {
+  // Update bars
+  const bars = document.querySelectorAll('.sync-bar-fill');
+  if (bars.length === 4) {
+    const val1 = 20 + quality * 0.6;
+    const val2 = 30 + quality * 0.4;
+    const val3 = 10 + quality * 0.8;
+    const val4 = 25 + quality * 0.5;
+
+    bars[0].style.height = Math.min(100, val1) + '%';
+    bars[1].style.height = Math.min(100, val2) + '%';
+    bars[2].style.height = Math.min(100, val3) + '%';
+    bars[3].style.height = Math.min(100, val4) + '%';
+
+    // Update bar styling
+    document.querySelectorAll('.sync-bar').forEach(bar => {
+      if (quality > 70) bar.classList.add('synced');
+      else bar.classList.remove('synced');
+    });
+  }
+
+  // Update status text
+  const indicator = document.getElementById('syncIndicator');
+  if (indicator) {
+    indicator.textContent = status;
+    indicator.classList.remove('poor', 'bad');
+    if (quality < 70 && quality >= 40) indicator.classList.add('poor');
+    if (quality < 40) indicator.classList.add('bad');
+  }
+}
+
 (function() {
   const track = document.getElementById('crossfaderTrack');
   const thumb = document.getElementById('crossfaderThumb');
@@ -3434,6 +3584,9 @@ window.addEventListener('load', () => {
 
   // Start master meter updates
   setInterval(updateMasterMeters, 50);
+
+  // Start beat sync updates
+  setInterval(updateBeatSync, 100);
 });
 
 // ----------------------------------------------------------------
